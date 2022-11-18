@@ -8,6 +8,7 @@ module rs.cs.restaurantnea {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
+    requires java.sql;
 
     opens rs.cs.restaurantnea to javafx.fxml;
     exports rs.cs.restaurantnea;
