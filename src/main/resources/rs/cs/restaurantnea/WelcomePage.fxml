@@ -7,7 +7,7 @@
 
 <ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="602.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
   <content>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="397.0" prefWidth="600.0">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="661.0" prefWidth="600.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cfa117" height="150.0" layoutX="-1.0" layoutY="63.0" stroke="#cfa117" strokeType="INSIDE" width="300.0" />
             <Line endX="600.0" endY="64.0" startX="0" startY="64" stroke="#cfa117" strokeWidth="2.0" />
@@ -16,10 +16,52 @@
                   <Font name="Verdana Bold" size="27.0" />
                </font>
             </Text>
-            <Button fx:id="signUpButton" layoutX="215.0" layoutY="156.0" mnemonicParsing="false" text="Sign Up!" textFill="#cfa117">
+            <Button id="signUpButton" fx:id="signUpButton" alignment="CENTER" contentDisplay="CENTER" layoutX="194.0" layoutY="159.0" mnemonicParsing="false" stylesheets="@stylesheets/buttons.css" text="Sign Up!" textAlignment="CENTER" textFill="#cfa119">
                <font>
                   <Font name="Verdana Bold" size="13.0" />
                </font></Button>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="148.0" layoutX="299.0" layoutY="65.0" stroke="TRANSPARENT" strokeType="INSIDE" width="302.0" />
+             <Button fx:id="logInButton" alignment="CENTER" contentDisplay="CENTER" layoutX="490.0" layoutY="159.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="79.0" stylesheets="@stylesheets/buttons.css" text="Log In!" textAlignment="CENTER" textFill="WHITE">
+                 <font>
+                     <Font name="Verdana Bold" size="13.0" />
+                 </font></Button>
+             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="185.0" layoutY="212.0" stroke="TRANSPARENT" strokeType="INSIDE" width="300.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cfa117" height="188.0" layoutX="299.0" layoutY="211.0" stroke="TRANSPARENT" strokeType="INSIDE" width="301.0" />
+            <Text fill="WHITE" layoutX="31.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New customer? ">
+               <font>
+                  <Font name="Verdana Bold" size="20.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="31.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create an account to get booking!" wrappingWidth="247.6640625">
+               <font>
+                  <Font name="Verdana Bold" size="20.0" />
+               </font>
+            </Text>
+            <Text fill="#cfa117" layoutX="322.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Already a customer?">
+               <font>
+                  <Font name="Verdana Bold" size="20.0" />
+               </font>
+            </Text>
+            <Text fill="#cfa117" layoutX="320.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Log in to get access to all things food!" wrappingWidth="258.4609375">
+               <font>
+                  <Font name="Verdana Bold" size="20.0" />
+               </font>
+            </Text>
+            <Text fill="#cfa117" layoutX="39.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Where we're located" underline="true">
+               <font>
+                  <Font name="Verdana Bold" size="20.0" />
+               </font>
+            </Text>
+            <Text fill="#cfa117" layoutX="63.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="123 Big Street, London EC1 4TF 07123456789 Parking is available on-site" textAlignment="CENTER" wrappingWidth="171.83056640625">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="368.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Opening times" underline="true">
+               <font>
+                  <Font name="Verdana Bold" size="20.0" />
+               </font>
+            </Text>
          </children>
     </AnchorPane>
   </content>
