@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="229.0" prefWidth="421.0" xmlns="http://javafx.com/javafx/1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rs.cs.restaurantnea.LISUController">
+   <children>
+      <TextField fx:id="emailInput" layoutX="123.0" layoutY="67.0" prefHeight="25.0" prefWidth="175.0" promptText="Email" />
+      <PasswordField fx:id="passwordInput" layoutX="123.0" layoutY="118.0" prefHeight="25.0" prefWidth="175.0" promptText="Password" />
+      <TextField fx:id="passwordShownInput" layoutX="123.0" layoutY="118.0" prefHeight="25.0" prefWidth="175.0" promptText="Password" visible="false" />
+      <CheckBox layoutX="306.0" layoutY="122.0" mnemonicParsing="false" onAction="#showHidePass" text="Show Password" />
+      <Button layoutX="14.0" layoutY="190.0" mnemonicParsing="false" onAction="#backToHome" text="Back" />
+      <Button layoutX="179.0" layoutY="165.0" mnemonicParsing="false" onAction="#loginCheck" text="Login" />
+      <Label layoutX="35.0" layoutY="120.0" prefHeight="21.0" prefWidth="73.0" text="Password:">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="35.0" layoutY="69.0" text="Email:">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Text layoutX="174.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Log In" underline="true">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font></Text>
+      <TextField fx:id="FNameInput" layoutX="14.0" layoutY="18.0" visible="false" />
+      <TextField fx:id="LNameInput" layoutX="258.0" layoutY="18.0" visible="false" />
+      <ChoiceBox fx:id="promoEmailsInput" layoutX="231.0" layoutY="172.0" prefWidth="150.0" visible="false" />
+   </children>
+</AnchorPane>

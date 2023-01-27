@@ -5,7 +5,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="602.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="602.0" xmlns="http://javafx.com/javafx/1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rs.cs.restaurantnea.GeneralController">
   <content>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="661.0" prefWidth="600.0">
          <children>
@@ -16,12 +16,12 @@
                   <Font name="Verdana Bold" size="27.0" />
                </font>
             </Text>
-            <Button id="signUpButton" fx:id="signUpButton" alignment="CENTER" contentDisplay="CENTER" layoutX="194.0" layoutY="159.0" mnemonicParsing="false" stylesheets="@stylesheets/buttons.css" text="Sign Up!" textAlignment="CENTER" textFill="#cfa119">
+            <Button id="signUpButton" fx:id="signUpButton" alignment="CENTER" contentDisplay="CENTER" layoutX="194.0" layoutY="159.0" mnemonicParsing="false" onAction="#signUpPage" stylesheets="@stylesheets/buttons.css" text="Sign Up!" textAlignment="CENTER" textFill="#cfa119">
                <font>
                   <Font name="Verdana Bold" size="13.0" />
                </font></Button>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="148.0" layoutX="299.0" layoutY="65.0" stroke="TRANSPARENT" strokeType="INSIDE" width="302.0" />
-             <Button fx:id="logInButton" alignment="CENTER" contentDisplay="CENTER" layoutX="490.0" layoutY="159.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="79.0" stylesheets="@stylesheets/buttons.css" text="Log In!" textAlignment="CENTER" textFill="WHITE">
+             <Button fx:id="logInButton" alignment="CENTER" contentDisplay="CENTER" layoutX="490.0" layoutY="159.0" mnemonicParsing="false" onAction="#loginPage" prefHeight="26.0" prefWidth="79.0" stylesheets="@stylesheets/buttons.css" text="Log In!" textAlignment="CENTER" textFill="WHITE">
                  <font>
                      <Font name="Verdana Bold" size="13.0" />
                  </font></Button>

@@ -119,6 +119,7 @@ public class cryptMethods {
             try (FileInputStream fis = new FileInputStream(keyStoreLoc)) {
                 keyStore.load(fis, passwordArray); // Loads the keystore using the password and from the position, both set above
             } catch (Exception e) {
+                initKeyStore();
                 errorMethods.defaultErrors(e);
             }
         } catch (Exception e) {
