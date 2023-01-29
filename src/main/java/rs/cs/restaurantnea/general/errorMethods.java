@@ -2,6 +2,7 @@ package rs.cs.restaurantnea.general;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import rs.cs.restaurantnea.Booking;
 
 import java.util.Optional;
 
@@ -66,6 +67,31 @@ public class errorMethods {
     public static Alert UAAccountExists(Alert alert) {
         alert.setHeaderText("Your account has not been deleted");
         alert.setContentText("You will stayed signed in");
+        return alert;
+    }
+    public static Alert CBInvalidInputs(Alert alert) {
+        alert.setHeaderText("One or more inputs invalid");
+        alert.setContentText("Booking not made");
+        return alert;
+    }
+    public static Alert CBInvalidDate(Alert alert) {
+        alert.setHeaderText("The date is invalid");
+        alert.setContentText("The date is invalid if: \n• It is today\n•It is earlier than today\n•It is more than one year from now\nBooking not made");
+        return alert;
+    }
+    public static Alert CBTooManyBookings(Alert alert) {
+        alert.setHeaderText("You already have a booking for this date");
+        alert.setContentText("You are only permitted one booking per day");
+        return alert;
+    }
+    public static Alert CBFullyBooked(Alert alert) {
+        alert.setHeaderText("Restaurant fully booked");
+        alert.setContentText("Unfortunately we have no space at that given time, other times might be available. We are sorry if this causes any inconveniences");
+        return alert;
+    }
+    public static Alert CBBookingSuccess(Alert alert, Booking booking) {
+        alert.setHeaderText("Your booking has been made");
+        alert.setContentText(booking.getName() + ", we are looking forward to seeing you on " + booking.getDate().toString() + " at " + booking.getTime());
         return alert;
     }
 }

@@ -9,14 +9,24 @@ public class Booking {
     private int amtPpl;
     private String eventType;
     private User user;
+    private int tableID;
 
-    public Booking(String name, LocalDate date, String time, int amtPpl, String eventType, User user) {
+    public Booking(String name, LocalDate date, String time, int amtPpl, String eventType, User user, int tableID) {
         this.name = name;
         this.date = date;
         this.time = time;
         this.amtPpl = amtPpl;
         this.eventType = eventType;
         this.user = user;
+        this.tableID = tableID;
+    }
+
+    public int getTableID() {
+        return tableID;
+    }
+
+    public void setTableID(int tableID) {
+        this.tableID = tableID;
     }
 
     public String getName() {

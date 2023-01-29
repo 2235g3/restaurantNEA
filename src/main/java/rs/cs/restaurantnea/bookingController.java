@@ -2,6 +2,7 @@ package rs.cs.restaurantnea;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
@@ -34,19 +35,30 @@ public class bookingController {
         generalCustomerMethods.toMenuInfo(event);
     }
     public void makeBooking(ActionEvent event) {
-        Booking newBooking = new Booking(nameInput.getText(), dateInput.getValue(), String.valueOf(timeInput.getValue()), Integer.parseInt(String.valueOf(amtPplInput.getValue())),String.valueOf(typeInput.getValue()), user);
-        custBookings.makeBooking(newBooking);
-        System.out.println(newBooking.getDate());
-        System.out.println(newBooking.getEventType());;
+        int amtPpl = 0;
+        if (String.valueOf(amtPplInput.getValue()).equals("Big table (more than 20 people)")) {
+            amtPpl = 21;
+        }
+        else {
+            amtPpl = Integer.parseInt(String.valueOf(amtPplInput.getValue()));
+        }
+        Booking newBooking = new Booking(nameInput.getText(), dateInput.getValue(), String.valueOf(timeInput.getValue()), amtPpl,String.valueOf(typeInput.getValue()), user, -1);
+        Alert alert = custBookings.makeBooking(newBooking);
+        alert.show();
     }
     public static void getData(User getUser) {
         user = getUser;
     }
     public void initialize() {
-        timeInput.getItems().add("Breakfast 9am - 12pm");
-        timeInput.getItems().add("Lunch 12pm - 5pm");
-        timeInput.getItems().add("Dinner 5pm - Close");
-        timeInput.setValue("Breakfast 9am - 12pm");
+        for (int i = 9; i < 21; i++) {
+            if (i < 10) {
+                timeInput.getItems().add("0" + i + ":00");
+            }
+            else {
+                timeInput.getItems().add(i + ":00");
+            }
+        }
+        timeInput.setValue("09:00");
         for (int i = 1; i < 21; i++) {
             amtPplInput.getItems().add(i);
         }

@@ -49,7 +49,7 @@ public class accountController {
     }
     public void deleteAccount(ActionEvent event) {
         userAccount.deleteAccount(user);
-        signOut(event);
+        new GeneralController().selectNewScene("welcomePage.fxml", event);
     }
     public void addChoiceBoxItems() {
         // These lines add items to the ChoiceBox promoEmailsField
