@@ -28,6 +28,7 @@ public class databaseMethods {
             results = new String[rowCount][columnCount]; // Inits the results array
             for (int i = 0; i < rowCount; i++) {
                 for (int j = 0; j < columnCount; j++) {
+                    resultSet.absolute(i + 1);
                     results[i][j] = resultSet.getString(columnNames[j]); // Stores all values from the result set to the array
                 }
             }

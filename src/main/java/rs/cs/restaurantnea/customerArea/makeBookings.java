@@ -10,7 +10,7 @@ import rs.cs.restaurantnea.general.regExMatchers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class custBookings {
+public class makeBookings {
     public static Alert makeBooking(Booking booking) {
         databaseMethods DBM = new databaseMethods();
         Alert alert = new Alert(Alert.AlertType.WARNING);

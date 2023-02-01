@@ -10,8 +10,9 @@ public class Booking {
     private String eventType;
     private User user;
     private int tableID;
+    private int bookingID;
 
-    public Booking(String name, LocalDate date, String time, int amtPpl, String eventType, User user, int tableID) {
+    public Booking(String name, LocalDate date, String time, int amtPpl, String eventType, User user, int tableID, int bookingID) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -19,6 +20,15 @@ public class Booking {
         this.eventType = eventType;
         this.user = user;
         this.tableID = tableID;
+        this.bookingID = bookingID;
+    }
+
+    public int getBookingID() {
+        return bookingID;
+    }
+
+    public void setBookingID(int bookingID) {
+        this.bookingID = bookingID;
     }
 
     public int getTableID() {

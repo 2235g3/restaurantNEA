@@ -32,8 +32,7 @@ public class accountController {
         generalCustomerMethods.signOut(event);
     }
     public void toBookings(ActionEvent event) {
-        bookingController BC = new bookingController();
-        BC.getData(user);
+        bookingController.getData(user);
         generalCustomerMethods.toBookings(event);
     }
     public void toOrders(ActionEvent event) {
