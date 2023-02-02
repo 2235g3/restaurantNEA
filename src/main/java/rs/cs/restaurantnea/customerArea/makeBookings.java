@@ -107,7 +107,7 @@ public class makeBookings {
         return availableTables;
     }
     public static void insertBooking(databaseMethods DBM, Booking booking) {
-        Object[] insertBookingParams = {booking.getUser().getCustomerID(), Integer.parseInt(booking.getTime().substring(0,1)), booking.getDate().toString(), booking.getAmtPpl(), booking.getEventType(), booking.getName()};
+        Object[] insertBookingParams = {booking.getUser().getCustomerID(), Integer.parseInt(booking.getTime().substring(0,2)), booking.getDate().toString(), booking.getAmtPpl(), booking.getEventType(), booking.getName()};
         DBM.CUDData("INSERT INTO bookings(custID, Time, Day, amountOfPeople, eventType, bookingName) VALUES(?,?,?,?,?,?)",insertBookingParams); // Inserts data into the bookings table
     }
     public static int findBookingID(databaseMethods DBM, Booking booking) {

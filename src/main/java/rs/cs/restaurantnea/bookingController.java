@@ -42,6 +42,16 @@ public class bookingController {
     private TableColumn<Booking, Integer> amtPplCol;
     @FXML
     private TableColumn<Booking, Integer> bookingIDCol;
+    @FXML
+    private TextField bookingIDInput;
+    @FXML
+    private TextField bookingNameInput;
+    @FXML
+    private DatePicker bookingDateInput;
+    @FXML
+    private ChoiceBox bookingTimeInput;
+    @FXML
+    private ChoiceBox bookingAmtPplInput;
     public static User user;
 
     public void signOut(ActionEvent event) {
@@ -68,14 +78,36 @@ public class bookingController {
         Alert alert = makeBookings.makeBooking(newBooking);
         alert.show();
     }
-    public static void viewBookings(TextField searchInput, ChoiceBox filterInput, ChoiceBox sortByInput) {
+    public void updateViewableBookings(ActionEvent event) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         Search search = new Search(searchInput.getText(), String.valueOf(filterInput.getValue()), String.valueOf(sortByInput.getValue()));
-        viewBookings.viewBookings();
+        String[][] customerBookings = viewBookings.getFilteredData(search);
+        tableOutput.getItems().clear();
+        for (String[] row:customerBookings) {
+            tableOutput.getItems().add(new Booking(row[0], LocalDate.parse(row[1],formatter), row[2], Integer.parseInt(row[3]), null, null, -1, Integer.parseInt(row[4])));
+        }
     }
     public static void getData(User getUser) {
         user = getUser;
     }
     public void initialize() {
+        timeChoiceBoxInit();
+        amtPplChoiceBoxInit();
+        typeChoiceBoxInit();
+        filterChoiceBoxInit();
+        sortByChoiceBoxInit();
+        cellFactoryInit();
+        tableInit();
+    }
+
+    public void tableInit() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String[][] customerBookings = viewBookings.initViewBookings();
+        for (String[] row:customerBookings) {
+            tableOutput.getItems().add(new Booking(row[0], LocalDate.parse(row[1],formatter), row[2], Integer.parseInt(row[3]), null, null, -1, Integer.parseInt(row[4])));
+        }
+    }
+    public void timeChoiceBoxInit() {
         for (int i = 9; i < 21; i++) {
             if (i < 10) {
                 timeInput.getItems().add("0" + i + ":00");
@@ -85,43 +117,44 @@ public class bookingController {
             }
         }
         timeInput.setValue("09:00");
-
+    }
+    public void amtPplChoiceBoxInit() {
         for (int i = 1; i < 21; i++) {
             amtPplInput.getItems().add(i);
         }
         amtPplInput.getItems().add("Big table (more than 20 people)");
         amtPplInput.setValue(1);
-
+    }
+    public void typeChoiceBoxInit() {
         typeInput.getItems().add("General Eating");
         typeInput.getItems().add("School Trip");
         typeInput.getItems().add("Business Meal");
         typeInput.getItems().add("Birthday Meal");
         typeInput.getItems().add("Other");
         typeInput.setValue("General Eating");
-
+    }
+    public void filterChoiceBoxInit() {
         filterInput.getItems().add("Date: Latest - Earliest");
         filterInput.getItems().add("Date: Earliest - Latest");
         filterInput.getItems().add("Amount of people: Least - Most");
         filterInput.getItems().add("Amount of people: Most - Least");
         filterInput.setValue("Date: Latest - Earliest");
-
+    }
+    public void sortByChoiceBoxInit() {
         sortByInput.getItems().add("Name");
         sortByInput.getItems().add("Date");
         sortByInput.getItems().add("Time");
         sortByInput.getItems().add("Amount of people");
         sortByInput.getItems().add("Booking ID");
         sortByInput.setValue("Date");
-
+    }
+    public void cellFactoryInit() {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("Name"));
         dateCol.setCellValueFactory(new PropertyValueFactory<>("Date"));
         timeCol.setCellValueFactory(new PropertyValueFactory<>("Time"));
         amtPplCol.setCellValueFactory(new PropertyValueFactory<>("AmtPpl"));
         bookingIDCol.setCellValueFactory(new PropertyValueFactory<>("BookingID"));
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String[][] customerBookings = viewBookings.viewBookings();
-        for (String[] row:customerBookings) {
-            tableOutput.getItems().add(new Booking(row[0], LocalDate.parse(row[1],formatter), row[2], Integer.parseInt(row[3]), null, null, -1, Integer.parseInt(row[4])));
-        }
     }
+
+
 }

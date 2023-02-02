@@ -14,11 +14,7 @@ public class databaseMethods {
             PreparedStatement prepStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE); // Creates a statement to format the results
             prepStatement = addParams(prepStatement, params); // Adds the parameters to the query
             ResultSet resultSet = prepStatement.executeQuery(); // Executes the selection and stores the results in a result set
-            int rowCount = 0;
-            if (resultSet.last()) {
-                rowCount = resultSet.getRow(); // Gets the amount of rows in the result set
-                resultSet.first(); // Sets the pointer to the beginning otherwise an error will occur
-            }
+            int rowCount = getAmtRows(resultSet);
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData(); // Gets the meta data of the result set
             int columnCount = resultSetMetaData.getColumnCount(); // Gets the amount of columns
             String[] columnNames = new String[columnCount];
@@ -42,6 +38,21 @@ public class databaseMethods {
             return null;
         }
     }
+
+    public static int getAmtRows(ResultSet resultSet) {
+        try {
+            if (resultSet.last()) {
+                int rowCount = resultSet.getRow(); // Gets the amount of rows in the result set
+                resultSet.first(); // Sets the pointer to the beginning otherwise an error will occur
+                return rowCount;
+            }
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e);
+            return 0;
+        }
+    }
+
     public static void CUDData(String sql, Object[] params) {
         try {
             Connection connection = DriverManager.getConnection("jdbc:ucanaccess://" + DBLocation); // Creates a connection to the database
