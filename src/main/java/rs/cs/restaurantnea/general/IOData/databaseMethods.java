@@ -1,4 +1,4 @@
-package rs.cs.restaurantnea.IOData;
+package rs.cs.restaurantnea.general.IOData;
 
 import rs.cs.restaurantnea.general.errorMethods;
 
@@ -53,7 +53,7 @@ public class databaseMethods {
         }
     }
 
-    public static void CUDData(String sql, Object[] params) {
+    public static void CUDData(String sql, Object[] params) { // CUD stands for Create/Update/Delete, it is similar to CRUD however reading data requires an output
         try {
             Connection connection = DriverManager.getConnection("jdbc:ucanaccess://" + DBLocation); // Creates a connection to the database
             PreparedStatement prepStatement = connection.prepareStatement(sql); // Only a simple statement is needed to insert data

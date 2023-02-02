@@ -1,4 +1,4 @@
-package rs.cs.restaurantnea.IOData;
+package rs.cs.restaurantnea.general.IOData;
 
 import rs.cs.restaurantnea.general.errorMethods;
 

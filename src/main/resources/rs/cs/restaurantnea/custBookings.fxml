@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="529.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rs.cs.restaurantnea.bookingController">
+<AnchorPane prefHeight="529.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rs.cs.restaurantnea.customerArea.bookingController">
     <Button layoutX="1.0" layoutY="41.0" mnemonicParsing="false" onAction="#toAccount" prefHeight="25.0" prefWidth="120.0" text="Account" textAlignment="CENTER" />
     <Button disable="true" layoutX="120.0" layoutY="41.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Bookings" textAlignment="CENTER" />
     <Button layoutX="240.0" layoutY="41.0" mnemonicParsing="false" onAction="#toOrders" prefHeight="25.0" prefWidth="120.0" text="Orders" textAlignment="CENTER" />

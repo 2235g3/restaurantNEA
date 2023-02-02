@@ -1,12 +1,12 @@
-package rs.cs.restaurantnea;
+package rs.cs.restaurantnea.customerArea;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import rs.cs.restaurantnea.customerArea.generalCustomerMethods;
-import rs.cs.restaurantnea.customerArea.userAccount;
+import rs.cs.restaurantnea.GeneralController;
+import rs.cs.restaurantnea.general.objects.User;
 
 public class accountController {
     @FXML

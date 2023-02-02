@@ -1,6 +1,6 @@
 package rs.cs.restaurantnea.general;
 
-import rs.cs.restaurantnea.User;
+import rs.cs.restaurantnea.general.objects.User;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

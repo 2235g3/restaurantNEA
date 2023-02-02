@@ -2,7 +2,7 @@ package rs.cs.restaurantnea.general;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import rs.cs.restaurantnea.Booking;
+import rs.cs.restaurantnea.general.objects.Booking;
 
 import java.util.Optional;
 

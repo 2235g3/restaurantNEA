@@ -22,6 +22,7 @@ public class GeneralController {
         } catch (Exception e) {
             System.out.println("An Error Occurred!");
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 

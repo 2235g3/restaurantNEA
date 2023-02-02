@@ -1,11 +1,11 @@
 package rs.cs.restaurantnea.LISU;
 
 import javafx.scene.control.Alert;
-import rs.cs.restaurantnea.IOData.cryptMethods;
-import rs.cs.restaurantnea.IOData.databaseMethods;
-import rs.cs.restaurantnea.User;
+import rs.cs.restaurantnea.general.IOData.cryptMethods;
+import rs.cs.restaurantnea.general.IOData.databaseMethods;
+import rs.cs.restaurantnea.general.objects.User;
 import rs.cs.restaurantnea.general.errorMethods;
-import rs.cs.restaurantnea.tempUser;
+import rs.cs.restaurantnea.general.objects.tempUser;
 
 import java.util.Base64;
 
@@ -19,27 +19,46 @@ public class logIn {
 
         tempUser = hashData(CM, tempUser); // Hashes data
 
-        try {
-            String[][] accountInfo = findUserData(DBM, tempUser); // Collects specific user data
-
-            if (!checkUserExists(alert, accountInfo)) { // Checks if user exists
-                return null;
+        if (checkAdmin(DBM, tempUser)) {
+            Object[] param = {tempUser.getHashedEmail()};
+            String[][] adminDetails = DBM.getData("SELECT password, IV FROM users WHERE hashedEmails = ?", param);
+            adminDetails[0][0] = CM.decrypt(adminDetails[0][0], tempUser.getHashedEmail(), Base64.getDecoder().decode(adminDetails[0][1]));
+            if (tempUser.getPassword().equals(adminDetails[0][0])) {
+                errorMethods.LISuccess(alert);
+                return new User(-1,null,null,null,null,1,null,null,-1,null,-1,-1);
             }
-
-            for (int j = 1; j < 5; j++) { // Decrypts all data that needs decrypting
-                accountInfo[0][j] = CM.decrypt(accountInfo[0][j], tempUser.getHashedEmail(), Base64.getDecoder().decode(accountInfo[0][7]));
-            }
-
-            if (!checkPassword(alert, accountInfo[0], tempUser)) { // Checks if password correct
-                return null;
-            }
-            return loginSuccess(alert, accountInfo[0]);
-        } catch (Exception e) {
-            System.out.println(e);
+            errorMethods.LIWrongPassword(alert);
             return null;
+        } else {
+            try {
+                String[][] accountInfo = findUserData(DBM, tempUser); // Collects specific user data
+
+                if (!checkUserExists(alert, accountInfo)) { // Checks if user exists
+                    return null;
+                }
+
+                for (int j = 1; j < 5; j++) { // Decrypts all data that needs decrypting
+                    accountInfo[0][j] = CM.decrypt(accountInfo[0][j], tempUser.getHashedEmail(), Base64.getDecoder().decode(accountInfo[0][7]));
+                }
+
+                if (!checkPassword(alert, accountInfo[0], tempUser)) { // Checks if password correct
+                    return null;
+                }
+                return loginSuccess(alert, accountInfo[0]);
+            } catch (Exception e) {
+                System.out.println(e);
+                return null;
+            }
         }
     }
-
+    public static boolean checkAdmin(databaseMethods DBM, tempUser tempUser) {
+        Object[] param = {tempUser.getHashedEmail()};
+        String[][] accountType = DBM.getData("SELECT accountType FROM users WHERE hashedEmails = ?", param);
+        if (accountType[0][0].equals("1")) {
+            return true;
+        }
+        return false;
+    }
     public static tempUser hashData(cryptMethods CM, tempUser tempUser) {
         // Sets some data to the hashed values they are supposed to be
         tempUser.setHashedEmail(CM.hashing(tempUser.getEmail()));

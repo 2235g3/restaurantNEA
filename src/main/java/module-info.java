@@ -12,4 +12,12 @@ module rs.cs.restaurantnea {
 
     opens rs.cs.restaurantnea to javafx.fxml;
     exports rs.cs.restaurantnea;
+    exports rs.cs.restaurantnea.general.objects;
+    opens rs.cs.restaurantnea.general.objects to javafx.fxml;
+    exports rs.cs.restaurantnea.customerArea;
+    opens rs.cs.restaurantnea.customerArea to javafx.fxml;
+    exports rs.cs.restaurantnea.LISU;
+    opens rs.cs.restaurantnea.LISU to javafx.fxml;
+    opens rs.cs.restaurantnea.adminArea to javafx.fxml;
+    exports rs.cs.restaurantnea.adminArea;
 }

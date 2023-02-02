@@ -1,4 +1,4 @@
-package rs.cs.restaurantnea;
+package rs.cs.restaurantnea.general.objects;
 
 public class User extends tempUser {
 

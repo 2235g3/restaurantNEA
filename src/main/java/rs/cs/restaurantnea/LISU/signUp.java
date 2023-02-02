@@ -1,9 +1,9 @@
 package rs.cs.restaurantnea.LISU;
 
 import javafx.scene.control.Alert;
-import rs.cs.restaurantnea.IOData.cryptMethods;
-import rs.cs.restaurantnea.IOData.databaseMethods;
-import rs.cs.restaurantnea.User;
+import rs.cs.restaurantnea.general.IOData.cryptMethods;
+import rs.cs.restaurantnea.general.IOData.databaseMethods;
+import rs.cs.restaurantnea.general.objects.User;
 import rs.cs.restaurantnea.general.errorMethods;
 import rs.cs.restaurantnea.general.regExMatchers;
 

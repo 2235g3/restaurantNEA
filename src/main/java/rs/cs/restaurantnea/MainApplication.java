@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import rs.cs.restaurantnea.general.dataMaintenance;
 
 public class MainApplication extends Application {
     // This method sets up the stage and scene when the user starts the program
