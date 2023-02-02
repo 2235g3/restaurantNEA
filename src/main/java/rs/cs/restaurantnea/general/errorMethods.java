@@ -94,4 +94,21 @@ public class errorMethods {
         alert.setContentText(booking.getName() + ", we are looking forward to seeing you on " + booking.getDate().toString() + " at " + booking.getTime());
         return alert;
     }
+    public static Optional<ButtonType> EBDeleteConfirmation() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+        alert.setHeaderText("Your booking is about to be deleted");
+        alert.setContentText("Are you sure you want to do this?");
+        return alert.showAndWait();
+    }
+    public static Alert EBBookingNotDeleted(Alert alert) {
+        alert.setHeaderText("Your booking has not been deleted");
+        alert.setContentText("We are happy you still want to eat with us");
+        return alert;
+    }
+    public static Alert EBBookingDeleted(Alert alert) {
+        alert.setHeaderText("Your booking has been deleted");
+        alert.setHeaderText("We are upset you don't want to eat with us");
+        return alert;
+    }
 }

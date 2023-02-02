@@ -1,15 +1,14 @@
 package rs.cs.restaurantnea;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import rs.cs.restaurantnea.IOData.databaseMethods;
-import rs.cs.restaurantnea.customerArea.makeBookings;
+import rs.cs.restaurantnea.customerArea.CUDBookings;
 import rs.cs.restaurantnea.customerArea.generalCustomerMethods;
 import rs.cs.restaurantnea.customerArea.viewBookings;
+import rs.cs.restaurantnea.general.errorMethods;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -55,8 +54,6 @@ public class bookingController {
     @FXML
     private ChoiceBox bookingAmtPplInput;
     @FXML
-    private Button findButton;
-    @FXML
     private Button saveButton;
     @FXML
     private Button delButton;
@@ -83,41 +80,44 @@ public class bookingController {
             amtPpl = Integer.parseInt(String.valueOf(amtPplInput.getValue()));
         }
         Booking newBooking = new Booking(nameInput.getText(), dateInput.getValue(), String.valueOf(timeInput.getValue()), amtPpl,String.valueOf(typeInput.getValue()), user, -1, -1);
-        Alert alert = makeBookings.makeBooking(newBooking);
+        Alert alert = CUDBookings.makeBooking(newBooking);
         alert.show();
     }
     public void findBooking(ActionEvent event) {
         databaseMethods DBM = new databaseMethods();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Object[] params = {bookingIDInput.getText(), user.getCustomerID()};
+        Object[] params = {Integer.parseInt(bookingIDInput.getText()), user.getCustomerID()};
         String[][] bookingDetails = DBM.getData("SELECT bookingName, Day, Time, amountOfPeople FROM bookings WHERE bookingID = ? AND custID = ?", params);
-        saveButton.setDisable(false);
-        delButton.setDisable(false);
-        bookingNameInput.setDisable(false);
-        bookingAmtPplInput.setDisable(false);
-        bookingDateInput.setDisable(false);
-        bookingTimeInput.setDisable(false);
-        bookingNameInput.setText(bookingDetails[0][0]);
-        bookingDateInput.setValue(LocalDate.parse(bookingDetails[0][1], formatter));
-        bookingTimeInput.setValue(bookingDetails[0][2]);
-        bookingAmtPplInput.setValue(bookingDetails[0][3]);
-    }
-    public void updateBookings() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        databaseMethods DBM = new databaseMethods();
-        Booking booking = new Booking(bookingNameInput.getText(), bookingDateInput.getValue(), String.valueOf(bookingTimeInput.getValue()), Integer.parseInt(String.valueOf(bookingAmtPplInput.getValue())), null, user, -1, Integer.parseInt(bookingIDInput.getText()));
-        String[][] potentialTableID = makeBookings.findPotentialTables(DBM, booking); // Finds tables that are big enough to fit the amount of people but are not too big
-        String[][] overlappedBookings = makeBookings.findOverlappedBookings(DBM, booking); // Finds bookings at a similar time period to the intended booking
-        String[][] bookedTables = makeBookings.findTblID(DBM, overlappedBookings); // Finds all tables that are being used at the time of booking so that there are no tables that get double booked. The average time eating out is around 4 hours
-
-        ArrayList<Integer> availableTables = makeBookings.findAvailableBookings(potentialTableID, bookedTables); // Creates an arraylist of all available tables
-
-        if (availableTables.size() > 0) { // If there is a table available, it gets set into the booking object
-            booking.setTableID(availableTables.get(0));
-        } else {
-            // [TBA]
+        if (bookingDetails.length != 0) {
+            setAbility(false);
+            bookingNameInput.setText(bookingDetails[0][0]);
+            bookingDateInput.setValue(LocalDate.parse(bookingDetails[0][1], formatter));
+            if (bookingDetails[0][2].length() == 1) {
+                bookingTimeInput.setValue("0" + bookingDetails[0][2] + ":00");
+            } else {
+                bookingTimeInput.setValue(bookingDetails[0][2] + ":00");
+            }
+            bookingAmtPplInput.setValue(Integer.parseInt(bookingDetails[0][3]));
         }
-        DBM.CUDData("UPDATE bookings SET bookingName = ?, Day = ?, Time = ?, amountOfPeople = ? WHERE bookingID = ?");
+    }
+    public void setAbility(boolean disabled) {
+        saveButton.setDisable(disabled);
+        delButton.setDisable(disabled);
+        bookingNameInput.setDisable(disabled);
+        bookingAmtPplInput.setDisable(disabled);
+        bookingDateInput.setDisable(disabled);
+        bookingTimeInput.setDisable(disabled);
+    }
+    public void updateBookings(ActionEvent event) {
+        Booking booking = new Booking(bookingNameInput.getText(), bookingDateInput.getValue(), String.valueOf(bookingTimeInput.getValue()).substring(0,2), Integer.parseInt(String.valueOf(bookingAmtPplInput.getValue())), null, user, -1, Integer.parseInt(bookingIDInput.getText()));
+        boolean accountDeleted = CUDBookings.updateBookings(booking);
+        if (accountDeleted) {
+            setAbility(true);
+        }
+    }
+    public void deleteBooking(ActionEvent event) {
+        CUDBookings.deleteBookingData(Integer.parseInt(bookingIDInput.getText()));
+        setAbility(true);
     }
     public void updateViewableBookings(ActionEvent event) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -152,9 +152,12 @@ public class bookingController {
         for (int i = 9; i < 21; i++) {
             if (i < 10) {
                 timeInput.getItems().add("0" + i + ":00");
+                bookingTimeInput.getItems().add("0" + i + ":00");
+
             }
             else {
                 timeInput.getItems().add(i + ":00");
+                bookingTimeInput.getItems().add(i + ":00");
             }
         }
         timeInput.setValue("09:00");
@@ -162,8 +165,10 @@ public class bookingController {
     public void amtPplChoiceBoxInit() {
         for (int i = 1; i < 21; i++) {
             amtPplInput.getItems().add(i);
+            bookingAmtPplInput.getItems().add(i);
         }
         amtPplInput.getItems().add("Big table (more than 20 people)");
+        bookingAmtPplInput.getItems().add("Big table (more than 20 people)");
         amtPplInput.setValue(1);
     }
     public void typeChoiceBoxInit() {
