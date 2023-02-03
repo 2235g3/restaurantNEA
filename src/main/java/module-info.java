@@ -9,6 +9,8 @@ module rs.cs.restaurantnea {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires java.sql;
+    requires mail;
+    requires activation;
 
     opens rs.cs.restaurantnea to javafx.fxml;
     exports rs.cs.restaurantnea;
