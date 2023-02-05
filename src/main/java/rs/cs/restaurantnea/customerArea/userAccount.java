@@ -79,9 +79,12 @@ public class userAccount {
             linkParams[i] = userBookings[i][0];
             sql += "?, ";
         }
-        sql = sql.substring(0, sql.length() - 2) + ")"; // Removes the last comma
-        DBM.CUDData(sql, linkParams); // Deletes the data from the link table
-        DBM.CUDData("DELETE FROM bookings WHERE custID = ?", custParams); // Deletes data from the booking table
+        if (userBookings.length > 0) {
+            sql = sql.substring(0, sql.length() - 2) + ")"; // Removes the last comma
+            DBM.CUDData(sql, linkParams); // Deletes the data from the link table
+            DBM.CUDData("DELETE FROM bookings WHERE custID = ?", custParams); // Deletes data from the booking table
+        }
+
     }
     public static void deleteKeyEntry(User user) {
         cryptMethods CM = new cryptMethods();

@@ -25,7 +25,7 @@ public class logIn {
             adminDetails[0][0] = CM.decrypt(adminDetails[0][0], tempUser.getHashedEmail(), Base64.getDecoder().decode(adminDetails[0][1]));
             if (tempUser.getPassword().equals(adminDetails[0][0])) {
                 errorMethods.LISuccess(alert);
-                return new User(-1,null,null,null,null,1,null,null,-1,null,-1,-1);
+                return new User(-1,null,null,null,null,1,null,null,-1,null,-1);
             }
             errorMethods.LIWrongPassword(alert);
             return null;
@@ -69,7 +69,7 @@ public class logIn {
     public static String[][] findUserData(databaseMethods DBM, tempUser tempUser) {
         Object[] param = {tempUser.getHashedEmail()}; // Sets the parameter for the SQL query
         // Returns specific user data as a 1d array
-        return DBM.getData("SELECT users.userID, users.FName, users.LName, users.email, users.password, users.accountType, users.hashedEmails, users.IV, customers.custID, customers.promoEmails, customers.memberPoints, customers.totalAmountSpent FROM users, customers WHERE users.userID = customers.userID AND users.hashedEmails = ? LIMIT 1", param);
+        return DBM.getData("SELECT users.userID, users.FName, users.LName, users.email, users.password, users.accountType, users.hashedEmails, users.IV, customers.custID, customers.promoEmails, customers.memberPoints FROM users, customers WHERE users.userID = customers.userID AND users.hashedEmails = ? LIMIT 1", param);
     }
 
     public static boolean checkUserExists(Alert alert, String[][] accountInfo) {
@@ -91,7 +91,7 @@ public class logIn {
     }
 
     public static User loginSuccess(Alert alert, String[] accountInfo) {
-        User user = new User(Integer.parseInt(accountInfo[0]), accountInfo[1], accountInfo[2], accountInfo[3], accountInfo[4], Integer.parseInt(accountInfo[5]), accountInfo[6], accountInfo[7], Integer.parseInt(accountInfo[8]), accountInfo[9], Integer.parseInt(accountInfo[10]), Float.parseFloat(accountInfo[11])); // The user's information is saved as a User object
+        User user = new User(Integer.parseInt(accountInfo[0]), accountInfo[1], accountInfo[2], accountInfo[3], accountInfo[4], Integer.parseInt(accountInfo[5]), accountInfo[6], accountInfo[7], Integer.parseInt(accountInfo[8]), accountInfo[9], Integer.parseInt(accountInfo[10])); // The user's information is saved as a User object
         alert = errorMethods.LISuccess(alert); // A success message is displayed
         alert.show();
         return user;

@@ -68,7 +68,7 @@ public class signUp {
 
         int ID = Integer.parseInt(DBM.getData("SELECT userID FROM users WHERE hashedEmails = ?", param)[0][0]); // Gets the userID of the new user from the users table so that the userID can be stored in the customers table
 
-        Object[] customersQueryParam = {ID, user.getPromoEmails(), 0, 0}; // Creates another array to be stored as an object array.
-        DBM.CUDData("INSERT INTO customers(userID, promoEmails, memberPoints, totalAmountSpent) VALUES(?,?,?,?)", customersQueryParam); // Inserts the data into the customers table
+        Object[] customersQueryParam = {ID, user.getPromoEmails(), 0}; // Creates another array to be stored as an object array.
+        DBM.CUDData("INSERT INTO customers(userID, promoEmails, memberPoints) VALUES(?,?,?)", customersQueryParam); // Inserts the data into the customers table
     }
 }

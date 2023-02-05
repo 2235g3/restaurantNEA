@@ -5,9 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
-import rs.cs.restaurantnea.customerArea.CUDBookings;
-import rs.cs.restaurantnea.customerArea.generalCustomerMethods;
-import rs.cs.restaurantnea.customerArea.viewBookings;
 import rs.cs.restaurantnea.general.objects.Booking;
 import rs.cs.restaurantnea.general.objects.Search;
 import rs.cs.restaurantnea.general.objects.User;
@@ -65,9 +62,6 @@ public class bookingController {
     }
     public void toAccount(ActionEvent event) {
         generalCustomerMethods.toAccount(event);
-    }
-    public void toOrders(ActionEvent event) {
-        generalCustomerMethods.toOrders(event);
     }
     public void toMenuInfo(ActionEvent event) {
         generalCustomerMethods.toMenuInfo(event);

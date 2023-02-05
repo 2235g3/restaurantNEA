@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="499.0" prefWidth="456.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rs.cs.restaurantnea.customerArea.accountController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="499.0" prefWidth="456.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rs.cs.restaurantnea.customerArea.accountController">
    <children>
       <VBox layoutY="109.0" prefHeight="351.0" prefWidth="456.0" spacing="15.0">
          <padding>
@@ -46,8 +46,8 @@
             </HBox>
             <HBox layoutX="60.0" layoutY="30.0" prefHeight="100.0" prefWidth="200.0" spacing="15.0">
                <children>
-                  <Label text="Total Amount Spent:" />
-                  <Label fx:id="TASpentLabel" text="£0.00" />
+                  <Label text="Member Points:" />
+                  <Label fx:id="memberPointsLabel" text="0" />
                </children>
             </HBox>
             <HBox layoutX="60.0" layoutY="91.0" prefHeight="100.0" prefWidth="200.0" spacing="15.0">
@@ -58,12 +58,6 @@
                      </padding>
                   </Label>
                   <ChoiceBox fx:id="promoEmailsField" prefHeight="11.0" prefWidth="150.0" />
-               </children>
-            </HBox>
-            <HBox layoutX="60.0" layoutY="152.0" prefHeight="100.0" prefWidth="200.0" spacing="15.0">
-               <children>
-                  <Label text="Member Points:" />
-                  <Label fx:id="memberPointsLabel" text="0" />
                </children>
             </HBox>
             <HBox layoutX="60.0" layoutY="213.0" prefHeight="100.0" prefWidth="200.0">
@@ -85,10 +79,9 @@
             <Font name="System Bold" size="25.0" />
          </font>
       </Label>
-      <Button disable="true" layoutX="1.0" layoutY="41.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="91.0" text="Account" textAlignment="CENTER" />
-      <Button layoutX="92.0" layoutY="41.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="91.0" text="Bookings" textAlignment="CENTER" onAction="#toBookings"/>
-      <Button layoutX="183.0" layoutY="41.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="91.0" text="Orders" textAlignment="CENTER" onAction="#toOrders"/>
-      <Button layoutX="274.0" layoutY="41.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="91.0" text="Menus &amp; Info" textAlignment="CENTER" onAction="#toMenuInfo"/>
-      <Button layoutX="365.0" layoutY="41.0" mnemonicParsing="false" onAction="#signOut" prefHeight="25.0" prefWidth="91.0" text="Sign Out" textAlignment="CENTER" />
+      <Button disable="true" layoutX="1.0" layoutY="41.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Account" textAlignment="CENTER" />
+      <Button layoutX="115.0" layoutY="41.0" mnemonicParsing="false" onAction="#toBookings" prefHeight="25.0" prefWidth="114.0" text="Bookings" textAlignment="CENTER" />
+      <Button layoutX="229.0" layoutY="41.0" mnemonicParsing="false" onAction="#toMenuInfo" prefHeight="25.0" prefWidth="114.0" text="Menus &amp; Info" textAlignment="CENTER" />
+      <Button layoutX="342.0" layoutY="41.0" mnemonicParsing="false" onAction="#signOut" prefHeight="25.0" prefWidth="114.0" text="Sign Out" textAlignment="CENTER" />
    </children>
 </AnchorPane>

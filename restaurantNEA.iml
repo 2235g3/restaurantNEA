@@ -61,5 +61,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="github.eikek.emil.javamail_2.12" level="project" />
   </component>
 </module>

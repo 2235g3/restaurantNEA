@@ -14,9 +14,6 @@ public class generalCustomerMethods {
     public static void toBookings(ActionEvent event) {
         new GeneralController().selectNewScene("custBookings.fxml",event);
     }
-    public static void toOrders(ActionEvent event) {
-        new GeneralController().selectNewScene("custOrders.fxml",event);
-    }
     public static void toMenuInfo(ActionEvent event) {
         new GeneralController().selectNewScene("menuInfo.fxml",event);
     }

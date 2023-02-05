@@ -18,8 +18,6 @@ public class accountController {
     @FXML
     private Label emailLabel;
     @FXML
-    private Label TASpentLabel;
-    @FXML
     private ChoiceBox promoEmailsField;
     @FXML
     private Label memberPointsLabel;
@@ -34,9 +32,6 @@ public class accountController {
     public void toBookings(ActionEvent event) {
         bookingController.getData(user);
         generalCustomerMethods.toBookings(event);
-    }
-    public void toOrders(ActionEvent event) {
-        generalCustomerMethods.toOrders(event);
     }
     public void toMenuInfo(ActionEvent event) {
         generalCustomerMethods.toMenuInfo(event);
@@ -63,7 +58,6 @@ public class accountController {
         lNameField.setText(user.getLName());
         custIDLabel.setText(String.valueOf(user.getCustomerID()));
         emailLabel.setText(user.getEmail());
-        TASpentLabel.setText("£" + user.getAmountSpent());
         promoEmailsField.setValue(user.getPromoEmails());
         memberPointsLabel.setText(String.valueOf(user.getMemberPoints()));
     }

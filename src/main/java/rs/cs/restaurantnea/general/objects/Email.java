@@ -3,19 +3,15 @@ package rs.cs.restaurantnea.general.objects;
 public class Email {
     private String senderEmail;
     private String[] recipientEmails;
-    private String[] BCCEmails;
     private String Subject;
     private String Contents;
-    private String[] attachmentPaths;
     private String frequencyType;
 
-    public Email(String senderEmail, String[] recipientEmails, String[] BCCEmails, String subject, String contents, String[] attachmentPaths, String frequencyType) {
+    public Email(String senderEmail, String[] recipientEmails, String subject, String contents, String frequencyType) {
         this.senderEmail = senderEmail;
         this.recipientEmails = recipientEmails;
-        this.BCCEmails = BCCEmails;
         this.Subject = subject;
         this.Contents = contents;
-        this.attachmentPaths = attachmentPaths;
         this.frequencyType = frequencyType;
     }
 
@@ -35,14 +31,6 @@ public class Email {
         this.recipientEmails = recipientEmails;
     }
 
-    public String[] getBCCEmails() {
-        return BCCEmails;
-    }
-
-    public void setBCCEmails(String[] BCCEmails) {
-        this.BCCEmails = BCCEmails;
-    }
-
     public String getSubject() {
         return Subject;
     }
@@ -57,14 +45,6 @@ public class Email {
 
     public void setContents(String contents) {
         Contents = contents;
-    }
-
-    public String[] getAttachmentPaths() {
-        return attachmentPaths;
-    }
-
-    public void setAttachmentPaths(String[] attachmentPaths) {
-        this.attachmentPaths = attachmentPaths;
     }
 
     public String getFrequencyType() {

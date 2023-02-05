@@ -14,15 +14,16 @@ public class CUDBookings {
         if (overlappedBookings.length > 0) { // If there are overlapping bookings this is true
             // Because the amount of bookings that overlap varies, this just creates a dynamic string so that the correct amount of parameters are entered
             String bookedTablesSQL = "SELECT tableID FROM tablesBookingLink WHERE bookingID IN (";
-            Object[] bookedTablesParams = {};
+            ArrayList<Object> dynBookedTablesParams = new ArrayList<>(); // Allows for a list of parameters that are dynamically sized
             for (int i = 0; i < overlappedBookings.length; i++) { // Loops through to add the right amount of parameters
-                bookedTablesParams[i] = overlappedBookings[i][0];
+                dynBookedTablesParams.add(overlappedBookings[i][0]);
                 bookedTablesSQL += "?";
                 if (i != overlappedBookings.length - 1) { // The last parameter does not need a comma, this would give an error
                     bookedTablesSQL += ",";
                 }
             }
             bookedTablesSQL += ") SORT BY ASC";
+            Object[] bookedTablesParams = dynBookedTablesParams.toArray();
             bookedTables = DBM.getData(bookedTablesSQL, bookedTablesParams); // Gets tableIDs of bookings at a similar time
         }
         return bookedTables;

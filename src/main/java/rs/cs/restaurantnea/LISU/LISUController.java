@@ -4,9 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import rs.cs.restaurantnea.GeneralController;
-import rs.cs.restaurantnea.LISU.generalLISUMethods;
-import rs.cs.restaurantnea.LISU.logIn;
-import rs.cs.restaurantnea.LISU.signUp;
 import rs.cs.restaurantnea.customerArea.accountController;
 import rs.cs.restaurantnea.general.objects.User;
 import rs.cs.restaurantnea.general.objects.tempUser;
@@ -60,7 +57,7 @@ public class LISUController {
     // This method is the parent to the signUp method, this is just a controller method to deal with signing up
     public void signUpCheck(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.WARNING); // Sets up a default alert
-        User tempSUUser = new User(-1, FNameInput.getText(), LNameInput.getText(), emailInput.getText(), getUpdatedPassword(), 2, null, null,  -1, String.valueOf(promoEmailsInput.getValue()) , -1, -1);
+        User tempSUUser = new User(-1, FNameInput.getText(), LNameInput.getText(), emailInput.getText(), getUpdatedPassword(), 2, null, null,  -1, String.valueOf(promoEmailsInput.getValue()) , -1);
         alert = new signUp().signUpCheck(tempSUUser, alert);
         alert.show();
     }

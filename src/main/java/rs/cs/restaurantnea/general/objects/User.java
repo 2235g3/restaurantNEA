@@ -5,16 +5,14 @@ public class User extends tempUser {
     private int customerID;
     private String promoEmails;
     private int memberPoints;
-    private float amountSpent;
     private String IV;
 
-    public User(int userID, String FName, String LName, String email, String password, int accountType, String hashedEmail, String IV, int customerID, String promoEmails, int memberPoints, float amountSpent) {
+    public User(int userID, String FName, String LName, String email, String password, int accountType, String hashedEmail, String IV, int customerID, String promoEmails, int memberPoints) {
         super(userID, FName, LName, email, password, accountType, hashedEmail);
         this.IV = IV;
         this.customerID = customerID;
         this.promoEmails = promoEmails;
         this.memberPoints = memberPoints;
-        this.amountSpent = amountSpent;
     }
 
     public String getIV() {
@@ -49,15 +47,7 @@ public class User extends tempUser {
         this.memberPoints = memberPoints;
     }
 
-    public float getAmountSpent() {
-        return amountSpent;
-    }
-
-    public void setAmountSpent(float amountSpent) {
-        this.amountSpent = amountSpent;
-    }
-
     public String[] getList() {
-        return new String[] {Integer.toString(this.getUserID()),this.getFName(),this.getLName(), this.getEmail(), this.getPassword(), Integer.toString(this.getAccountType()), this.getHashedEmail(),Integer.toString(customerID), promoEmails, Integer.toString(memberPoints), Float.toString(amountSpent)};
+        return new String[] {Integer.toString(this.getUserID()),this.getFName(),this.getLName(), this.getEmail(), this.getPassword(), Integer.toString(this.getAccountType()), this.getHashedEmail(),Integer.toString(customerID), promoEmails, Integer.toString(memberPoints)};
     }
 }
