@@ -30,10 +30,13 @@ public class accountController {
         generalCustomerMethods.signOut(event);
     }
     public void toBookings(ActionEvent event) {
-        bookingController.getData(user);
+        bookingController BC = new bookingController();
+        BC.getData(user);
         generalCustomerMethods.toBookings(event);
     }
     public void toMenuInfo(ActionEvent event) {
+        menuInfoController MIC = new menuInfoController();
+        MIC.getData(user);
         generalCustomerMethods.toMenuInfo(event);
     }
     public void saveUserData(ActionEvent event) {
@@ -47,10 +50,10 @@ public class accountController {
     }
     public void addChoiceBoxItems() {
         // These lines add items to the ChoiceBox promoEmailsField
-        promoEmailsField.getItems().add("Never");
-        promoEmailsField.getItems().add("Yearly");
-        promoEmailsField.getItems().add("Monthly");
-        promoEmailsField.getItems().add("Weekly");
+        String[] promoEmailsItems = {"Never", "Yearly", "Monthly", "Weekly"};
+        for (String item:promoEmailsItems) {
+            promoEmailsField.getItems().add(item);
+        }
     }
     public void displayUserData() {
         // These lines set the user data to be displayed except for the password which is always hashed and never saved as a text value

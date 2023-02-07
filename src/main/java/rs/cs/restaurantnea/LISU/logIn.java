@@ -54,8 +54,10 @@ public class logIn {
     public static boolean checkAdmin(databaseMethods DBM, tempUser tempUser) {
         Object[] param = {tempUser.getHashedEmail()};
         String[][] accountType = DBM.getData("SELECT accountType FROM users WHERE hashedEmails = ?", param);
-        if (accountType[0][0].equals("1")) {
-            return true;
+        if (accountType.length > 0) {
+            if (accountType[0][0].equals("1")) {
+                return true;
+            }
         }
         return false;
     }

@@ -22,7 +22,7 @@ public class LISUController {
     private TextField LNameInput;
     @FXML
     private ChoiceBox promoEmailsInput;
-    public boolean clicked = false;
+    private boolean clicked = false;
 
     // These methods deal with scene switching on an event
     public void backToHome(ActionEvent event) {
@@ -32,7 +32,7 @@ public class LISUController {
         new GeneralController().selectNewScene("custAccount.fxml", event);
     }
     public void toAdminBookings(ActionEvent event) {
-        new GeneralController().selectNewScene("adminBookings.fxml", event);
+        new GeneralController().selectNewScene("adminUsers.fxml", event);
     }
     public void showHidePass(ActionEvent event) {
         clicked = new generalLISUMethods().showHidePass(passwordInput, passwordShownInput, clicked);
@@ -74,10 +74,10 @@ public class LISUController {
 
     // This method adds items to the ChoiceBox promoEmailsInput
     public void initialize() {
-        promoEmailsInput.getItems().add("Never");
-        promoEmailsInput.getItems().add("Yearly");
-        promoEmailsInput.getItems().add("Monthly");
-        promoEmailsInput.getItems().add("Weekly");
+        String[] promoEmailsItems = {"Never", "Yearly", "Monthly", "Weekly"};
+        for (String item:promoEmailsItems) {
+            promoEmailsInput.getItems().add(item);
+        }
         promoEmailsInput.setValue("Never");
     }
 }

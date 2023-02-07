@@ -2,9 +2,6 @@ package rs.cs.restaurantnea.adminArea;
 
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
 import rs.cs.restaurantnea.general.objects.Search;
-import rs.cs.restaurantnea.general.objects.User;
-
-import static rs.cs.restaurantnea.customerArea.bookingController.user;
 
 public class viewBookings {
     public static String[][] initViewBookings() {
@@ -13,18 +10,18 @@ public class viewBookings {
     }
     public static String[][] getBookingsData() {
         databaseMethods DBM = new databaseMethods();
-        String[][] customerBookings = DBM.getData("SELECT bookingName, Day, Time, amountOfPeople, bookingID FROM bookings ORDER BY Day DESC", new Object[] {});
+        String[][] customerBookings = DBM.getData("SELECT bookingName, Day, Time, amountOfPeople, eventType, bookingID FROM bookings ORDER BY Day DESC", new Object[] {});
         return customerBookings; // Returns booking data
     }
     public static String[][] getFilteredData(Search search) {
         databaseMethods DBM = new databaseMethods();
-        String sql = "SELECT bookingName, Day, Time, amountOfPeople, bookingID FROM bookings"; // Creates the base sql query
+        String sql = "SELECT bookingName, Day, Time, amountOfPeople, eventType, bookingID FROM bookings"; // Creates the base sql query
         Object[] params = {}; // Inits the params array, InvalidParam is so the program can check whether the array is empty or not
         if (search.getText().length() != 0) { // If the user has searched something, the search query is added
             sql = createFilteredSQL(sql, search);
             params = new Object[] {"%" + search.getText() + "%" }; // Creates the parameters for the search query
         }
-        createSortedSQL(sql, search); // If the data is to be in any specific order, this adds it to the SQL query
+        sql = createSortedSQL(sql, search); // If the data is to be in any specific order, this adds it to the SQL query
         String[][] customerBookings = DBM.getData(sql, params); // Gets the filtered user data
         return customerBookings;
     }
@@ -44,6 +41,9 @@ public class viewBookings {
                 break;
             case "Booking ID":
                 sql += " WHERE bookingID LIKE ?";
+                break;
+            case "Event Type":
+                sql += "WHERE eventType LIKE ?";
                 break;
         }
         return sql;

@@ -8,7 +8,19 @@ import rs.cs.restaurantnea.general.objects.Booking;
 
 import java.util.ArrayList;
 
-public class CUDBookings {
+public class adminCUDBookings {
+    public static boolean checkCustomerExists(int customerID) {
+        databaseMethods DBM = new databaseMethods();
+
+        Object[] customerParams= {customerID};
+        String[][] countCustomers = DBM.getData("SELECT COUNT(custID) FROM customers WHERE custID = ?", customerParams);
+        if (countCustomers.length == 1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     public static String[][] findTblID(databaseMethods DBM, String[][] overlappedBookings) {
         String[][] bookedTables = {}; // Inits the array
         if (overlappedBookings.length > 0) { // If there are overlapping bookings this is true
@@ -65,11 +77,11 @@ public class CUDBookings {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         databaseMethods DBM = new databaseMethods();
 
-        String[][] potentialTableID = CUDBookings.findPotentialTables(DBM, booking); // Finds tables that are big enough to fit the amount of people but are not too big
-        String[][] overlappedBookings = CUDBookings.findOverlappedBookings(DBM, booking); // Finds bookings at a similar time period to the intended booking
-        String[][] bookedTables = CUDBookings.findTblID(DBM, overlappedBookings); // Finds all tables that are being used at the time of booking so that there are no tables that get double booked. The average time eating out is around 4 hours
+        String[][] potentialTableID = adminCUDBookings.findPotentialTables(DBM, booking); // Finds tables that are big enough to fit the amount of people but are not too big
+        String[][] overlappedBookings = adminCUDBookings.findOverlappedBookings(DBM, booking); // Finds bookings at a similar time period to the intended booking
+        String[][] bookedTables = adminCUDBookings.findTblID(DBM, overlappedBookings); // Finds all tables that are being used at the time of booking so that there are no tables that get double booked. The average time eating out is around 4 hours
 
-        ArrayList<Integer> availableTables = CUDBookings.findAvailableBookings(potentialTableID, bookedTables); // Creates an arraylist of all available tables
+        ArrayList<Integer> availableTables = adminCUDBookings.findAvailableBookings(potentialTableID, bookedTables); // Creates an arraylist of all available tables
 
         if (availableTables.size() == 0) { // Runs if there are no available tables
             errorMethods.CBFullyBooked(alert).show();

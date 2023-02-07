@@ -21,6 +21,9 @@ public class emailController {
     public void toBookings(ActionEvent event) {
         generalAdminMethods.toBookings(event);
     }
+    public void toUsers(ActionEvent event) {
+        generalAdminMethods.toUsers(event);
+    }
     public void sendEmail(ActionEvent event) {
         Email email = new Email("restaurantNEAManager@gmail.com", null, subjectInput.getText(), contentsInput.getHtmlText(), String.valueOf(frequencyInput.getValue()));
         emailMethods.sendEmails(email);

@@ -86,7 +86,7 @@ public class cryptMethods {
             loadKeyStore();
             SecretKey secretKey = loadKeyEntry(hashedEmail); // Loads key with alias that corresponds to the current users userID
             byte[] encryptedBytes = Base64.getDecoder().decode(encryptedString); // Converts encrypted string to a byte array
-            Cipher decryptionCipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Creates an decryption cipher with a set algorithm
+            Cipher decryptionCipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Creates decryption cipher with a set algorithm
             IvParameterSpec initVector = new IvParameterSpec(iv); // Uses the iv that was stored as a string in the DB to decrypt related data
             decryptionCipher.init(Cipher.DECRYPT_MODE, secretKey, initVector); // Inits the decryption cipher
             byte[] decryptedBytes = decryptionCipher.doFinal(encryptedBytes); // Decrypts the data

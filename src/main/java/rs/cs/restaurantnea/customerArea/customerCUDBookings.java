@@ -10,7 +10,7 @@ import rs.cs.restaurantnea.general.regExMatchers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class CUDBookings {
+public class customerCUDBookings {
     public static Alert makeBooking(Booking booking) {
         databaseMethods DBM = new databaseMethods();
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -42,6 +42,7 @@ public class CUDBookings {
         insertBooking(DBM, booking); // Inserts data into the bookings table
         int bookingID = findBookingID(DBM, booking); // Selects the new bookingID
         insertTblBookingLink(DBM, booking, bookingID); // Inserts data into the tablesBookingLink table
+        updateMemberPoints(DBM, booking);
         return errorMethods.CBBookingSuccess(alert, booking);
     }
     public static boolean checkValidInputs(Booking booking) {
@@ -119,6 +120,10 @@ public class CUDBookings {
         Object[] insertTblBookingParams = {booking.getTableID(), bookingID};
         DBM.CUDData("INSERT INTO tablesBookingLink(tableID, bookingID) VALUES(?,?)", insertTblBookingParams); // Inserts the link between tables and bookings
     }
+    public static void updateMemberPoints(databaseMethods DBM, Booking booking) {
+        Object[] updateMemberPointsParams = {booking.getUser().getCustomerID()};
+        DBM.CUDData("UPDATE customers SET memberPoints = memberPoints + 5 WHERE custID = ?", updateMemberPointsParams);
+    }
     public static void deleteBookingData(int bookingID) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         if (errorMethods.EBDeleteConfirmation().isPresent()) { // Runs if the user confirms they want to delete their booking
@@ -134,11 +139,11 @@ public class CUDBookings {
     public static boolean updateBookings(Booking booking) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         databaseMethods DBM = new databaseMethods();
-        String[][] potentialTableID = CUDBookings.findPotentialTables(DBM, booking); // Finds tables that are big enough to fit the amount of people but are not too big
-        String[][] overlappedBookings = CUDBookings.findOverlappedBookings(DBM, booking); // Finds bookings at a similar time period to the intended booking
-        String[][] bookedTables = CUDBookings.findTblID(DBM, overlappedBookings); // Finds all tables that are being used at the time of booking so that there are no tables that get double booked. The average time eating out is around 4 hours
+        String[][] potentialTableID = customerCUDBookings.findPotentialTables(DBM, booking); // Finds tables that are big enough to fit the amount of people but are not too big
+        String[][] overlappedBookings = customerCUDBookings.findOverlappedBookings(DBM, booking); // Finds bookings at a similar time period to the intended booking
+        String[][] bookedTables = customerCUDBookings.findTblID(DBM, overlappedBookings); // Finds all tables that are being used at the time of booking so that there are no tables that get double booked. The average time eating out is around 4 hours
 
-        ArrayList<Integer> availableTables = CUDBookings.findAvailableBookings(potentialTableID, bookedTables); // Creates an arraylist of all available tables
+        ArrayList<Integer> availableTables = customerCUDBookings.findAvailableBookings(potentialTableID, bookedTables); // Creates an arraylist of all available tables
 
         if (availableTables.size() == 0) { // Runs if there are no available tables
             errorMethods.CBFullyBooked(alert).show();

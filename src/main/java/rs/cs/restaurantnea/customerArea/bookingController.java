@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
+import rs.cs.restaurantnea.general.errorMethods;
 import rs.cs.restaurantnea.general.objects.Booking;
 import rs.cs.restaurantnea.general.objects.Search;
 import rs.cs.restaurantnea.general.objects.User;
@@ -61,9 +62,13 @@ public class bookingController {
         generalCustomerMethods.signOut(event);
     }
     public void toAccount(ActionEvent event) {
+        accountController AC = new accountController();
+        AC.getData(user);
         generalCustomerMethods.toAccount(event);
     }
     public void toMenuInfo(ActionEvent event) {
+        menuInfoController MIC = new menuInfoController();
+        MIC.getData(user);
         generalCustomerMethods.toMenuInfo(event);
     }
     public void makeBooking(ActionEvent event) {
@@ -75,8 +80,11 @@ public class bookingController {
             amtPpl = Integer.parseInt(String.valueOf(amtPplInput.getValue()));
         }
         Booking newBooking = new Booking(nameInput.getText(), dateInput.getValue(), String.valueOf(timeInput.getValue()), amtPpl,String.valueOf(typeInput.getValue()), user, -1, -1); // Creates a temp booking obj
-        Alert alert = CUDBookings.makeBooking(newBooking); // Attempts to make the booking
+        Alert alert = customerCUDBookings.makeBooking(newBooking); // Attempts to make the booking
         alert.show();
+        if (alert == errorMethods.CBBookingSuccess(alert, newBooking)) {
+            user.setMemberPoints(user.getMemberPoints() + 5);
+        }
     }
     public void findBooking(ActionEvent event) {
         try {
@@ -111,13 +119,13 @@ public class bookingController {
     }
     public void updateBookings(ActionEvent event) {
         Booking booking = new Booking(bookingNameInput.getText(), bookingDateInput.getValue(), String.valueOf(bookingTimeInput.getValue()).substring(0,2), Integer.parseInt(String.valueOf(bookingAmtPplInput.getValue())), null, user, -1, Integer.parseInt(bookingIDInput.getText()));
-        boolean accountDeleted = CUDBookings.updateBookings(booking); // Attempts to update the booking
+        boolean accountDeleted = customerCUDBookings.updateBookings(booking); // Attempts to update the booking
         if (accountDeleted) {
             setAbility(true); // Disables the input to edit a booking
         }
     }
     public void deleteBooking(ActionEvent event) {
-        CUDBookings.deleteBookingData(Integer.parseInt(bookingIDInput.getText())); // Attempts to delete the booking
+        customerCUDBookings.deleteBookingData(Integer.parseInt(bookingIDInput.getText())); // Attempts to delete the booking
         setAbility(true); // Disables the input to edit a booking
     }
     public void updateViewableBookings(ActionEvent event) {

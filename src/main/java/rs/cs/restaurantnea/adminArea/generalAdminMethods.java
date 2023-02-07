@@ -14,4 +14,7 @@ public class generalAdminMethods {
     public static void toBookings(ActionEvent event) {
         new GeneralController().selectNewScene("adminBookings.fxml", event);
     }
+    public static void toUsers(ActionEvent event) {
+        new GeneralController().selectNewScene("adminusers.fxml", event);
+    }
 }

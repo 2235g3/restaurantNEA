@@ -7,6 +7,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
 import rs.cs.restaurantnea.general.objects.Booking;
 import rs.cs.restaurantnea.general.objects.Search;
+import rs.cs.restaurantnea.general.objects.User;
+import rs.cs.restaurantnea.customerArea.customerCUDBookings;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +31,21 @@ public class bookingsController {
     @FXML
     private TableColumn<Booking, Integer> amtPplCol;
     @FXML
+    private TableColumn<Booking, String> eventTypeCol;
+    @FXML
     private TableColumn<Booking, Integer> bookingIDCol;
+    @FXML
+    private TextField custIDField;
+    @FXML
+    private TextField bookingNameField;
+    @FXML
+    private DatePicker bookingDateField;
+    @FXML
+    private ChoiceBox bookingTimeField;
+    @FXML
+    private ChoiceBox bookingAmtPplField;
+    @FXML
+    private ChoiceBox eventTypeField;
     @FXML
     private TextField bookingIDInput;
     @FXML
@@ -51,6 +67,7 @@ public class bookingsController {
     public void toEmails(ActionEvent event) {
         generalAdminMethods.toEmails(event);
     }
+    public void toUsers(ActionEvent event) {generalAdminMethods.toUsers(event);}
     public void findBooking(ActionEvent event) {
         try {
             databaseMethods DBM = new databaseMethods();
@@ -84,14 +101,36 @@ public class bookingsController {
     }
     public void updateBookings(ActionEvent event) {
         Booking booking = new Booking(bookingNameInput.getText(), bookingDateInput.getValue(), String.valueOf(bookingTimeInput.getValue()).substring(0,2), Integer.parseInt(String.valueOf(bookingAmtPplInput.getValue())), null, null, -1, Integer.parseInt(bookingIDInput.getText()));
-        boolean accountDeleted = CUDBookings.updateBookings(booking); // Attempts to update the booking
+        boolean accountDeleted = customerCUDBookings.updateBookings(booking); // Attempts to update the booking
         if (accountDeleted) {
             setAbility(true); // Disables the input to edit a booking
         }
     }
     public void deleteBooking(ActionEvent event) {
-        CUDBookings.deleteBookingData(Integer.parseInt(bookingIDInput.getText())); // Attempts to delete the booking
+        customerCUDBookings.deleteBookingData(Integer.parseInt(bookingIDInput.getText())); // Attempts to delete the booking
         setAbility(true); // Disables the input to edit a booking
+    }
+    public void createBooking(ActionEvent event) {
+        try {
+            if (adminCUDBookings.checkCustomerExists(Integer.parseInt(custIDField.getText()))) {
+                int amtPpl = 0; // Inits the amount of people
+                if (String.valueOf(bookingAmtPplField.getValue()).equals("Big table (more than 20 people)")) {
+                    amtPpl = 21; // To prevent the choicebox from being infinite, by setting 21+ ppl to just 21 allows the restaurant to just prepare for a large table, they can always add more small tables if more space is needed
+                }
+                else {
+                    amtPpl = Integer.parseInt(String.valueOf(bookingAmtPplField.getValue()));
+                }
+                User customer = new User(-1, null, null, null, null, -1, null, null, Integer.parseInt(custIDField.getText()), null, -1);
+                Booking newBooking = new Booking(bookingNameField.getText(), bookingDateField.getValue(), String.valueOf(bookingTimeField.getValue()), amtPpl, String.valueOf(eventTypeField.getValue()), customer, -1, -1);
+                Alert alert = customerCUDBookings.makeBooking(newBooking);
+                alert.show();
+            }
+            else {
+                // [TBA]
+            }
+        } catch (Exception e) {
+            // [TBA]
+        }
     }
     public void updateViewableBookings(ActionEvent event) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Inits the date formatter, formats String to LocalDate
@@ -99,7 +138,7 @@ public class bookingsController {
         String[][] customerBookings = viewBookings.getFilteredData(search); // Collects all the filtered data in the order selected
         tableOutput.getItems().clear(); // Clears the table so just the filtered data is displayed
         for (String[] row:customerBookings) { // Loops through the data to add to the table
-            tableOutput.getItems().add(new Booking(row[0], LocalDate.parse(row[1],formatter), row[2], Integer.parseInt(row[3]), null, null, -1, Integer.parseInt(row[4])));
+            tableOutput.getItems().add(new Booking(row[0], LocalDate.parse(row[1],formatter), row[2], Integer.parseInt(row[3]), row[4], null, -1, Integer.parseInt(row[5])));
         }
     }
     public void initialize() { // Inits the scene
@@ -115,7 +154,7 @@ public class bookingsController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Inits the date formatter, formats String to LocalDate
         String[][] customerBookings = viewBookings.initViewBookings(); // Gets the customers bookings
         for (String[] row:customerBookings) { // Adds data to the table
-            tableOutput.getItems().add(new Booking(row[0], LocalDate.parse(row[1],formatter), row[2], Integer.parseInt(row[3]), null, null, -1, Integer.parseInt(row[4])));
+            tableOutput.getItems().add(new Booking(row[0], LocalDate.parse(row[1],formatter), row[2], Integer.parseInt(row[3]), row[4], null, -1, Integer.parseInt(row[5])));
         }
     }
     public void timeChoiceBoxInit() { // Adds values to the time choice box
@@ -137,12 +176,16 @@ public class bookingsController {
     }
     public void filterChoiceBoxInit() { // Adds values to the filter choice box
         String[] filterItems = {"Date: Latest - Earliest", "Date: Earliest - Latest", "Amount of people: Least - Most", "Amount of people: Most - Least"};
-        filterInput.getItems().add(filterItems);
+        for (String item:filterItems) {
+            filterInput.getItems().add(item);
+        }
         filterInput.setValue("Date: Latest - Earliest");
     }
     public void sortByChoiceBoxInit() { // Adds values to the sort by choice box
-        String[] sortItems = {"Name", "Date", "Time", "Amount of people", "Booking ID"};
-        sortByInput.getItems().add(sortItems);
+        String[] sortItems = {"Name", "Date", "Time", "Amount of people", "Event Type", "Booking ID"};
+        for (String item:sortItems) {
+            sortByInput.getItems().add(item);
+        }
         sortByInput.setValue("Date");
     }
     public void cellFactoryInit() { // Creates cell factories to allow data to be added to columns
@@ -150,6 +193,7 @@ public class bookingsController {
         dateCol.setCellValueFactory(new PropertyValueFactory<>("Date"));
         timeCol.setCellValueFactory(new PropertyValueFactory<>("Time"));
         amtPplCol.setCellValueFactory(new PropertyValueFactory<>("AmtPpl"));
+        eventTypeCol.setCellValueFactory(new PropertyValueFactory<>("EventType"));
         bookingIDCol.setCellValueFactory(new PropertyValueFactory<>("BookingID"));
     }
 }
