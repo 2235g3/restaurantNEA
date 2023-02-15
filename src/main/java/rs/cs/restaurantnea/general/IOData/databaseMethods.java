@@ -34,7 +34,7 @@ public class databaseMethods {
 
             return results;
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error whilst accessing the database", "Here is the error:\n" + e);
             return null;
         }
     }
@@ -48,7 +48,7 @@ public class databaseMethods {
             }
             return 0;
         } catch (Exception e) {
-            System.out.println(e);
+            errorMethods.exceptionErrors("There was an error with the ResultSet", "Here is the error:\n" + e);
             return 0;
         }
     }
@@ -62,7 +62,7 @@ public class databaseMethods {
             prepStatement.close();
             connection.close(); // Housekeeping
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error whilst accessing the database", "Here is the error:\n" + e);
         }
     }
 
@@ -80,7 +80,7 @@ public class databaseMethods {
             }
             return prepStatement;
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error creating the SQL query", "Here is the error:\n" + e);
             return prepStatement;
         }
     }

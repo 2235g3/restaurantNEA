@@ -3,6 +3,7 @@ package rs.cs.restaurantnea.adminArea;
 import rs.cs.restaurantnea.customerArea.userAccount;
 import rs.cs.restaurantnea.general.IOData.cryptMethods;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
+import rs.cs.restaurantnea.general.errorMethods;
 import rs.cs.restaurantnea.general.objects.User;
 import rs.cs.restaurantnea.general.regExMatchers;
 
@@ -26,8 +27,8 @@ public class CUDUsers {
         user.setHashedEmail(CM.hashing(user.getEmail()));
         Object[] IVParams = {user.getUserID()};
         user.setIV(DBM.getData("SELECT IV FROM users WHERE userID = ?", IVParams)[0][0]);
-        if (user.getFName().length() < 3 || user.getLName().length() < 3) {
-            // [TBA]
+        if (user.getFName().length() < 3 || user.getLName().length() < 3 || regExCheck(user)) {
+            errorMethods.exceptionErrors("Account was not updated","The first and/or last name is incorrect");
         }
         user.setFName(CM.encrypt(user.getFName(), user.getHashedEmail(), false, new IvParameterSpec(Base64.getDecoder().decode(user.getIV()))));
         user.setLName(CM.encrypt(user.getLName(), user.getHashedEmail(), false, new IvParameterSpec(Base64.getDecoder().decode(user.getIV()))));

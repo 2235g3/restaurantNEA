@@ -7,6 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import static rs.cs.restaurantnea.general.errorMethods.exceptionErrors;
+
 public class GeneralController {
 
     public Stage stage;
@@ -20,8 +22,7 @@ public class GeneralController {
             stage.setScene(newScene); // Sets the new scene
             stage.show(); // Displays the new scene
         } catch (Exception e) {
-            System.out.println("An Error Occurred!");
-            System.out.println(e);
+            exceptionErrors("An error occurred while switching scenes", "Here is the error:\n" + e.toString());
             e.printStackTrace();
         }
     }

@@ -16,14 +16,14 @@ public class customerCUDBookings {
         Alert alert = new Alert(Alert.AlertType.WARNING);
 
         if (checkValidInputs(booking)) { // Checks for valid inputs
-            return errorMethods.CBInvalidInputs(alert);
+            return errorMethods.premadeAlertErrors(alert, "One or more inputs invalid", "Booking not made");
         }
         if (checkValidDate(booking)) { // Checks if the date is valid
-            return errorMethods.CBInvalidDate(alert);
+            return errorMethods.premadeAlertErrors(alert, "The date is invalid", "The date is invalid if: \n• It is today\n•It is earlier than today\n•It is more than one year from now\nBooking not made");
         }
 
         if (checkDailyBookings(DBM, booking)) { // Checks if the user already has a booking on that day
-            return errorMethods.CBTooManyBookings(alert);
+            return errorMethods.premadeAlertErrors(alert, "You already have a booking for this date", "You are only permitted one booking per day");
         }
 
         String[][] potentialTableID = findPotentialTables(DBM, booking); // Finds tables that are big enough to fit the amount of people but are not too big
@@ -36,14 +36,14 @@ public class customerCUDBookings {
             booking.setTableID(availableTables.get(0));
         }
         else {
-            return errorMethods.CBFullyBooked(alert);
+            return errorMethods.premadeAlertErrors(alert, "Restaurant fully booked", "Unfortunately we have no space at that given time, other times might be available. We are sorry if this causes any inconveniences");
         }
 
         insertBooking(DBM, booking); // Inserts data into the bookings table
         int bookingID = findBookingID(DBM, booking); // Selects the new bookingID
         insertTblBookingLink(DBM, booking, bookingID); // Inserts data into the tablesBookingLink table
         updateMemberPoints(DBM, booking);
-        return errorMethods.CBBookingSuccess(alert, booking);
+        return errorMethods.premadeAlertErrors(alert, "Your booking has been made", booking.getName() + ", we are looking forward to seeing you on " + booking.getDate().toString() + " at " + booking.getTime());
     }
     public static boolean checkValidInputs(Booking booking) {
         if (booking.getDate() == null || !regExMatchers.createNameMatcher(booking.getName()).matches()) { // If no date is inputted or the name is invalid, an error is thrown
@@ -131,14 +131,20 @@ public class customerCUDBookings {
             Object[] deleteParam = {bookingID}; // The only parameter needed is the booking id for both queries
             DBM.CUDData("DELETE FROM bookings WHERE bookingID = ?", deleteParam); // Deletes the actual booking
             DBM.CUDData("DELETE FROM tablesBookingLink WHERE bookingID = ?", deleteParam); // Deletes the bookings' link to its restaurant table
-            errorMethods.EBBookingDeleted(alert).show();
+            errorMethods.premadeAlertErrors(alert, "Your booking has been deleted", "We are upset you don't want to eat with us").show();
         } else {
-            errorMethods.EBBookingNotDeleted(alert).show();
+            errorMethods.premadeAlertErrors(alert, "Your booking has not been deleted", "We are happy you still want to eat with us").show();
         }
     }
     public static boolean updateBookings(Booking booking) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         databaseMethods DBM = new databaseMethods();
+
+        if (checkDailyBookings(DBM, booking)) { // Checks if the user already has a booking on that day
+            errorMethods.premadeAlertErrors(alert, "You already have a booking for this date", "You are only permitted one booking per day").show();
+            return false;
+        }
+
         String[][] potentialTableID = customerCUDBookings.findPotentialTables(DBM, booking); // Finds tables that are big enough to fit the amount of people but are not too big
         String[][] overlappedBookings = customerCUDBookings.findOverlappedBookings(DBM, booking); // Finds bookings at a similar time period to the intended booking
         String[][] bookedTables = customerCUDBookings.findTblID(DBM, overlappedBookings); // Finds all tables that are being used at the time of booking so that there are no tables that get double booked. The average time eating out is around 4 hours
@@ -146,7 +152,7 @@ public class customerCUDBookings {
         ArrayList<Integer> availableTables = customerCUDBookings.findAvailableBookings(potentialTableID, bookedTables); // Creates an arraylist of all available tables
 
         if (availableTables.size() == 0) { // Runs if there are no available tables
-            errorMethods.CBFullyBooked(alert).show();
+            errorMethods.premadeAlertErrors(alert, "Restaurant fully booked", "Unfortunately we have no space at that given time, other times might be available. We are sorry if this causes any inconveniences").show();
             return false;
         } else { // If there is a table available, it gets set into the booking object and the booking is updated
             booking.setTableID(availableTables.get(0));
@@ -154,7 +160,7 @@ public class customerCUDBookings {
             DBM.CUDData("UPDATE bookings SET bookingName = ?, Day = ?, Time = ?, amountOfPeople = ? WHERE bookingID = ?", updateBookingsParams);
             Object[] updateLinkParams = {booking.getTableID(), booking.getBookingID()};
             DBM.CUDData("UPDATE tablesBookingLink SET tableID = ? WHERE bookingID = ?", updateLinkParams);
-            errorMethods.CBBookingSuccess(alert, booking).show();
+            errorMethods.premadeAlertErrors(alert, "Your booking has been made", booking.getName() + ", we are looking forward to seeing you on " + booking.getDate().toString() + " at " + booking.getTime()).show();
             return true;
         }
     }

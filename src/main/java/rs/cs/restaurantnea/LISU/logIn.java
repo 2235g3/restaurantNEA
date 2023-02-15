@@ -3,8 +3,8 @@ package rs.cs.restaurantnea.LISU;
 import javafx.scene.control.Alert;
 import rs.cs.restaurantnea.general.IOData.cryptMethods;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
-import rs.cs.restaurantnea.general.objects.User;
 import rs.cs.restaurantnea.general.errorMethods;
+import rs.cs.restaurantnea.general.objects.User;
 import rs.cs.restaurantnea.general.objects.tempUser;
 
 import java.util.Base64;
@@ -24,10 +24,10 @@ public class logIn {
             String[][] adminDetails = DBM.getData("SELECT password, IV FROM users WHERE hashedEmails = ?", param);
             adminDetails[0][0] = CM.decrypt(adminDetails[0][0], tempUser.getHashedEmail(), Base64.getDecoder().decode(adminDetails[0][1]));
             if (tempUser.getPassword().equals(adminDetails[0][0])) {
-                errorMethods.LISuccess(alert);
+                errorMethods.premadeAlertErrors(alert, "You have logged in!", "All information was correct").show();
                 return new User(-1,null,null,null,null,1,null,null,-1,null,-1);
             }
-            errorMethods.LIWrongPassword(alert);
+            errorMethods.premadeAlertErrors(alert, "Password incorrect", "Please try again").show();
             return null;
         } else {
             try {
@@ -46,7 +46,7 @@ public class logIn {
                 }
                 return loginSuccess(alert, accountInfo[0]);
             } catch (Exception e) {
-                System.out.println(e);
+                errorMethods.defaultErrors(e);
                 return null;
             }
         }
@@ -76,7 +76,7 @@ public class logIn {
 
     public static boolean checkUserExists(Alert alert, String[][] accountInfo) {
         if (accountInfo.length == 0) { // If no records exist with the email the user provided, an error message is displayed and they stay on the same page
-            alert = errorMethods.LIAccountNotExists(alert);
+            alert = errorMethods.premadeAlertErrors(alert, "Account does not exist", "Please try again");
             alert.show();
             return false;
         }
@@ -85,7 +85,7 @@ public class logIn {
 
     public static boolean checkPassword(Alert alert, String[] accountInfo, tempUser tempUser) {
         if (!accountInfo[4].equals(tempUser.getPassword())) { // If the password is incorrect an error message is displayed and they stay on the same page
-            alert = errorMethods.LIWrongPassword(alert);
+            alert = errorMethods.premadeAlertErrors(alert, "Password incorrect", "Please try again");
             alert.show();
             return false;
         }
@@ -94,7 +94,7 @@ public class logIn {
 
     public static User loginSuccess(Alert alert, String[] accountInfo) {
         User user = new User(Integer.parseInt(accountInfo[0]), accountInfo[1], accountInfo[2], accountInfo[3], accountInfo[4], Integer.parseInt(accountInfo[5]), accountInfo[6], accountInfo[7], Integer.parseInt(accountInfo[8]), accountInfo[9], Integer.parseInt(accountInfo[10])); // The user's information is saved as a User object
-        alert = errorMethods.LISuccess(alert); // A success message is displayed
+        alert = errorMethods.premadeAlertErrors(alert, "You have logged in!", "All information was correct"); // A success message is displayed
         alert.show();
         return user;
     }

@@ -22,9 +22,9 @@ public class emailMethods {
                 Message message = createMessage(session, email);
                 Transport.send(message);
             }
+            errorMethods.exceptionErrors("The email was sent!", "The email should appear in inboxes soon!");
         } catch (Exception e) {
-            System.out.println(e);
-            e.printStackTrace();
+            errorMethods.exceptionErrors("There was an error sending the email", "Here is the error:\n" + e);
         }
     }
     public static Properties emailServiceConfig() {
@@ -67,7 +67,7 @@ public class emailMethods {
             message.setContent(multipart);
             return message;
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error creating the message", "Here is the error:\n" + e);
             return null;
         }
     }
@@ -75,9 +75,23 @@ public class emailMethods {
         databaseMethods DBM = new databaseMethods();
         cryptMethods CM = new cryptMethods();
 
+        ArrayList<Object> dynFrequencyParams = createSQLRecipients(email);
+        String sql = dynFrequencyParams.get(dynFrequencyParams.size() - 1).toString();
+        dynFrequencyParams.remove(dynFrequencyParams.size() - 1);
+        Object[] frequencyParams = dynFrequencyParams.toArray();
+        String[][] encryptedEmails = DBM.getData(sql, frequencyParams);
+        String[] recipientEmails = new String[encryptedEmails.length];
+        for (int i = 0; i < encryptedEmails.length; i++) {
+            recipientEmails[i] = CM.decrypt(encryptedEmails[i][0], encryptedEmails[i][1],  Base64.getDecoder().decode(encryptedEmails[i][2]));
+        }
+        email.setRecipientEmails(recipientEmails);
+        return email;
+    }
+    public static ArrayList<Object> createSQLRecipients(Email email) {
         String[] frequencies = {"Weekly", "Monthly", "Yearly", "All Users", "Never"};
         String sql = "SELECT users.email, users.hashedEmails, users.IV FROM users, customers WHERE users.userID = customers.userID AND customers.promoEmails IN (";
         ArrayList<Object> dynFrequencyParams = new ArrayList<>();
+
         for (int i = 0; i < frequencies.length - 1; i++) {
             if (frequencies[i].equals("All Users")) {
                 dynFrequencyParams.add(frequencies[frequencies.length - 1]);
@@ -93,13 +107,7 @@ public class emailMethods {
                 sql += "?,";
             }
         }
-        Object[] frequencyParams = dynFrequencyParams.toArray();
-        String[][] encryptedEmails = DBM.getData(sql, frequencyParams);
-        String[] recipientEmails = new String[encryptedEmails.length];
-        for (int i = 0; i < encryptedEmails.length; i++) {
-            recipientEmails[i] = CM.decrypt(encryptedEmails[i][0], encryptedEmails[i][1],  Base64.getDecoder().decode(encryptedEmails[i][2]));
-        }
-        email.setRecipientEmails(recipientEmails);
-        return email;
+        dynFrequencyParams.add(sql);
+        return dynFrequencyParams;
     }
 }

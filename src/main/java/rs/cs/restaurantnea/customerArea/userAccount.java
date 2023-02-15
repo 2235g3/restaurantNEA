@@ -16,7 +16,7 @@ public class userAccount {
     public static User saveUserData(User user, String[] inputFields) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         if (regExCheck(alert, user) != alert || inputFields[0].length() < 3 || inputFields[1].length() < 3 || inputFields[2].equals("null")) { // Checks if the inputted values are valid
-            alert = UAInvalidInputs(alert);
+            alert = premadeAlertErrors(alert, "One or more inputs invalid", "Your data has not been saved");
             alert.show();
             return user;
         }
@@ -29,7 +29,7 @@ public class userAccount {
         Matcher fNameMatcher = regExMatchers.createNameMatcher(user.getFName());
         Matcher lNameMatcher = regExMatchers.createNameMatcher(user.getLName());
         if (!fNameMatcher.matches() || !lNameMatcher.matches()) { // Checks that the inputted names match the regex
-            return UAInvalidInputs(alert);
+            return premadeAlertErrors(alert, "One or more inputs invalid", "Your data has not been saved");
         }
         return alert;
     }
@@ -50,8 +50,8 @@ public class userAccount {
     public static User saveSuccess(User user, String[] inputFields, Alert alert) {
         user.setFName(inputFields[0]);
         user.setLName(inputFields[1]);
-        user.setPromoEmails(inputFields[2]); // Saves the data into the user obj
-        UASaveSuccess(alert, inputFields).show();
+        user.setPromoEmails(inputFields[2]); // Saves the data into the user object
+        premadeAlertErrors(alert, "Your data has been saved!", "First Name: " + inputFields[0] + "\n Last Name: " + inputFields[1] + "\n Promotional Emails Frequency: " + inputFields[2]).show();
         return user;
     }
     public static void deleteAccount(User user) {
@@ -60,10 +60,10 @@ public class userAccount {
         if (UADeleteConfirmation().isPresent()) { // Confirms the user wants to delete their account to prevent misclicks
             deleteData(user); // Deletes the database data
             deleteKeyEntry(user); // Deletes the key entry for that user
-            UADeleteWarning(alert).show();
+            premadeAlertErrors(alert, "Your account has now been deleted", "You have now been signed out").show();
         }
         else {
-            UAAccountExists(alert).show();
+            premadeAlertErrors(alert, "Your account has not been deleted", "You will stayed signed in").show();
         }
     }
     public static void deleteData(User user) {

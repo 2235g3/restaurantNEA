@@ -4,12 +4,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import rs.cs.restaurantnea.GeneralController;
 import rs.cs.restaurantnea.LISU.generalLISUMethods;
 import rs.cs.restaurantnea.LISU.signUp;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
 import rs.cs.restaurantnea.general.objects.Search;
 import rs.cs.restaurantnea.general.objects.User;
+
+import static rs.cs.restaurantnea.general.errorMethods.UADeleteConfirmation;
+import static rs.cs.restaurantnea.general.errorMethods.exceptionErrors;
 
 public class userController {
     @FXML
@@ -86,6 +88,7 @@ public class userController {
         }
         else {
             setAbility(false);
+            exceptionErrors("User not found", "The user ID is not related to any account");
         }
     }
     public void setAbility(boolean disabled) {
@@ -132,9 +135,15 @@ public class userController {
         }
     }
     public void deleteUser(ActionEvent event) {
-        User selectedUser = new User(Integer.parseInt(userIDInput.getText()), fNameInput.getText(), lNameInput.getText(), emailAddressOutput.getText(), null, -1, null, null, -1, String.valueOf(promoEmailsInput.getValue()), Integer.parseInt(memberPointsInput.getText()));
-        CUDUsers.deleteUser(selectedUser);
-        new GeneralController().selectNewScene("welcomePage.fxml", event);
+        if (UADeleteConfirmation().isPresent()) {
+            User selectedUser = new User(Integer.parseInt(userIDInput.getText()), fNameInput.getText(), lNameInput.getText(), emailAddressOutput.getText(), null, -1, null, null, -1, String.valueOf(promoEmailsInput.getValue()), Integer.parseInt(memberPointsInput.getText()));
+            CUDUsers.deleteUser(selectedUser);
+            setAbility(true);
+            exceptionErrors("The account has now been deleted", "This account no longer exists");
+        }
+        else {
+            exceptionErrors("The account has not been deleted", "Please be more careful, customer accounts are valuable");
+        }
     }
     public void initialize() {
         filterInputInit();

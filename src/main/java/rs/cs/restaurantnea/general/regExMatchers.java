@@ -15,7 +15,7 @@ public class regExMatchers {
         return passRegExPattern.matcher(user.getPassword());
     }
     public static Matcher createNameMatcher(String name) {
-        Pattern nameRegExPattern = Pattern.compile("\\b([A-ZÀ-ÿ][a-z]+)"); // Defined the regular expression for the user's name
+        Pattern nameRegExPattern = Pattern.compile("^[A-Z][a-z]*(([,.] |[ '-])[A-Za-z][a-z]*)*(\\.?)( [IVXLCDM]+)?$"); // Defined the regular expression for the user's name
         return nameRegExPattern.matcher(name);
     }
 }

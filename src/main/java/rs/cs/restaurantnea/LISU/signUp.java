@@ -4,12 +4,11 @@ import javafx.scene.control.Alert;
 import rs.cs.restaurantnea.general.IOData.cryptMethods;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
 import rs.cs.restaurantnea.general.objects.User;
-import rs.cs.restaurantnea.general.errorMethods;
 import rs.cs.restaurantnea.general.regExMatchers;
 
 import java.util.regex.Matcher;
 
-import static rs.cs.restaurantnea.general.errorMethods.SUInvalidInputs;
+import static rs.cs.restaurantnea.general.errorMethods.premadeAlertErrors;
 
 public class signUp {
     public static Alert signUpCheck(User user, Alert alert) {
@@ -18,7 +17,7 @@ public class signUp {
         databaseMethods DBM = new databaseMethods();
 
         if (regExCheck(user, alert) != alert || user.getFName().length() < 3 || user.getLName().length() < 3 || user.getPromoEmails().equals("null")) { // Ensures valid data is entered
-            return SUInvalidInputs(alert); // If any invalid data is entered, an error message is displayed
+            return premadeAlertErrors(alert, "One or more inputs invalid", "No account has been created"); // If any invalid data is entered, an error message is displayed
         }
 
         // Sets some data to the hashed values they are supposed to be
@@ -26,11 +25,11 @@ public class signUp {
         user.setPassword(CM.hashing(user.getPassword()));
 
         if (DBM.getData("SELECT email FROM users WHERE hashedEmails = ?", new Object[] {user.getHashedEmail()}).length != 0) { // Checks the users table to check whether an account with the same email doesn't already exist
-            return errorMethods.SUAccountExists(alert); // Displays an error message
+            return premadeAlertErrors(alert, "An account with that email already exists", "No account has been created"); // Displays an error message
         }
 
         databaseInsert(user,CM,DBM,new Object[] {user.getHashedEmail()}); // Inserts the user's data into the database
-        return errorMethods.SUSuccess(alert); // Displays a success alert
+        return premadeAlertErrors(alert, "Account created!", "You can now login"); // Displays a success alert
     }
 
     public static Alert regExCheck(User user, Alert alert) {
@@ -41,7 +40,7 @@ public class signUp {
         Matcher lNameMatcher = regExMatchers.createNameMatcher(user.getLName());
 
         if (!emailMatcher.matches() || !passMatcher.matches() || !fNameMatcher.matches() || lNameMatcher.matches()) { // If the input is invalid, an error alert is displayed
-            return SUInvalidInputs(alert);
+            return premadeAlertErrors(alert, "One or more inputs invalid", "No account has been created");
         }
         return alert;
     }

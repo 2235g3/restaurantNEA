@@ -82,7 +82,7 @@ public class bookingController {
         Booking newBooking = new Booking(nameInput.getText(), dateInput.getValue(), String.valueOf(timeInput.getValue()), amtPpl,String.valueOf(typeInput.getValue()), user, -1, -1); // Creates a temp booking obj
         Alert alert = customerCUDBookings.makeBooking(newBooking); // Attempts to make the booking
         alert.show();
-        if (alert == errorMethods.CBBookingSuccess(alert, newBooking)) {
+        if (alert == errorMethods.premadeAlertErrors(alert, "Your booking has been made", newBooking.getName() + ", we are looking forward to seeing you on " + newBooking.getDate().toString() + " at " + newBooking.getTime())) {
             user.setMemberPoints(user.getMemberPoints() + 5);
         }
     }

@@ -11,9 +11,10 @@ public class MainApplication extends Application {
     public void start(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("welcomePage.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 600, 240);
+            Scene scene = new Scene(fxmlLoader.load(), 602, 405);
             stage.setTitle("Restaurant NEA");
             stage.setScene(scene);
+            stage.setResizable(false);
             stage.show();
         } catch (Exception e) {
             System.out.println("An error occurred!");

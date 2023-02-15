@@ -61,6 +61,14 @@ public class adminCUDBookings {
         }
         return availableTables;
     }
+    public static boolean checkDailyBookings(databaseMethods DBM, Booking booking) {
+        Object[] dateParam = {booking.getDate().toString(), booking.getUser().getCustomerID()}; // Creates the parameters
+        String[][] countBookings = DBM.getData("SELECT COUNT(bookingID) FROM bookings WHERE Day = ? AND custID = ?", dateParam); // Counts how many bookings the user has on one day, can only be 1 or 0
+        if (countBookings[0][0].equals("1")) {
+            return true;
+        }
+        return false;
+    }
     public static void deleteBookingData(int bookingID) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         if (errorMethods.EBDeleteConfirmation().isPresent()) { // Runs if the user confirms they want to delete their booking
@@ -68,14 +76,19 @@ public class adminCUDBookings {
             Object[] deleteParam = {bookingID}; // The only parameter needed is the booking id for both queries
             DBM.CUDData("DELETE FROM bookings WHERE bookingID = ?", deleteParam); // Deletes the actual booking
             DBM.CUDData("DELETE FROM tablesBookingLink WHERE bookingID = ?", deleteParam); // Deletes the bookings' link to its restaurant table
-            errorMethods.EBBookingDeleted(alert).show();
+            errorMethods.premadeAlertErrors(alert, "Your booking has been deleted", "We are upset you don't want to eat with us").show();
         } else {
-            errorMethods.EBBookingNotDeleted(alert).show();
+            errorMethods.premadeAlertErrors(alert, "Your booking has not been deleted", "We are happy you still want to eat with us").show();
         }
     }
     public static boolean updateBookings(Booking booking) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         databaseMethods DBM = new databaseMethods();
+
+        if (checkDailyBookings(DBM, booking)) { // Checks if the user already has a booking on that day
+            errorMethods.premadeAlertErrors(alert, "You already have a booking for this date", "You are only permitted one booking per day").show();
+            return false;
+        }
 
         String[][] potentialTableID = adminCUDBookings.findPotentialTables(DBM, booking); // Finds tables that are big enough to fit the amount of people but are not too big
         String[][] overlappedBookings = adminCUDBookings.findOverlappedBookings(DBM, booking); // Finds bookings at a similar time period to the intended booking
@@ -84,7 +97,7 @@ public class adminCUDBookings {
         ArrayList<Integer> availableTables = adminCUDBookings.findAvailableBookings(potentialTableID, bookedTables); // Creates an arraylist of all available tables
 
         if (availableTables.size() == 0) { // Runs if there are no available tables
-            errorMethods.CBFullyBooked(alert).show();
+            errorMethods.premadeAlertErrors(alert, "Restaurant fully booked", "Unfortunately we have no space at that given time, other times might be available. We are sorry if this causes any inconveniences").show();
             return false;
         } else { // If there is a table available, it gets set into the booking object and the booking is updated
             booking.setTableID(availableTables.get(0));
@@ -92,7 +105,7 @@ public class adminCUDBookings {
             DBM.CUDData("UPDATE bookings SET bookingName = ?, Day = ?, Time = ?, amountOfPeople = ? WHERE bookingID = ?", updateBookingsParams);
             Object[] updateLinkParams = {booking.getTableID(), booking.getBookingID()};
             DBM.CUDData("UPDATE tablesBookingLink SET tableID = ? WHERE bookingID = ?", updateLinkParams);
-            errorMethods.CBBookingSuccess(alert, booking).show();
+            errorMethods.premadeAlertErrors(alert, "Your booking has been made", booking.getName() + ", we are looking forward to seeing you on " + booking.getDate().toString() + " at " + booking.getTime()).show();
             return true;
         }
     }

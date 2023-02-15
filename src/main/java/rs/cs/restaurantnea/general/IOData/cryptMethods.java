@@ -23,7 +23,7 @@ public class cryptMethods {
             byte[] digest = messageDigest.digest(str.getBytes(StandardCharsets.UTF_8)); // Uses the message digest to convert the plaintext, 'str', into a hashed byte array
             return bytesToHex(digest); // Due to byte arrays producing the same values but different outputs, the hashed byte array but converted into a string in the form of hex
         } catch (Exception e) {
-            errorMethods.defaultErrors(e); // Outputs errors
+            errorMethods.exceptionErrors("There was an error while hashing", "Here is the error:\n" + e); // Outputs errors
             return null;
         }
     }
@@ -52,7 +52,7 @@ public class cryptMethods {
             keyGenerator.init(256); // Specifies that keys will have a size of 256, the most secure value
             key = keyGenerator.generateKey(); // Generates a new key
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error while initializing the encryption keys", "Here is the error:\n" + e);
         }
     }
     public static void generateIV() {
@@ -76,7 +76,7 @@ public class cryptMethods {
             byte[] encryptedBytes = encryptionCipher.doFinal(byteText); // Encrypts data
             return Base64.getEncoder().encodeToString(encryptedBytes); // Returns encrypted data as a string
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error while encrypting the data", "Here is the error:\n" + e);
             return null;
         }
     }
@@ -92,7 +92,7 @@ public class cryptMethods {
             byte[] decryptedBytes = decryptionCipher.doFinal(encryptedBytes); // Decrypts the data
             return new String(decryptedBytes); // Returns the decrypted text as a string
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error while decrypting the data", "Here is the error:\n" + e);
             return null;
         }
     }
@@ -110,7 +110,7 @@ public class cryptMethods {
             }
             loadKeyStore(); // The keystore created is loaded
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error creating the keystore", "Here is the error:\n" + e);
         }
     }
     public static void loadKeyStore() {
@@ -120,11 +120,10 @@ public class cryptMethods {
                 keyStore.load(fis, passwordArray); // Loads the keystore using the password and from the position, both set above
             } catch (Exception e) {
                 initKeyStore();
-                errorMethods.defaultErrors(e);
             }
         } catch (Exception e) {
             initKeyStore(); // This will only run an error if the key store doesn't already exist
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error loading the keystore", "Here is the error:\n" + e);
         }
     }
     public static void setKeyValInKeyStore(SecretKey sKey, String hashedEmail) {
@@ -135,7 +134,7 @@ public class cryptMethods {
             keyStore.setEntry(hashedEmail, secretKeyEntry, passwordEntry); // This sets up the entry in the keystore
             keyStore.store(new java.io.FileOutputStream(keyStoreLoc), passwordArray); // This stores the value in the keystore, otherwise the entry will only be temporarily stored
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error while creating the entry" , "Here is the error:\n" + e);
         }
     }
     public static SecretKey loadKeyEntry(String hashedEmail) {
@@ -146,7 +145,7 @@ public class cryptMethods {
             SecretKey secretKey = new SecretKeySpec(keyData,0, keyData.length,"AES"); // Creates the new AES SecretKey
             return secretKey;
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error while loading the key entry", "Here is the error:\n" + e);
             return null;
         }
     }
@@ -156,7 +155,7 @@ public class cryptMethods {
             keyStore.deleteEntry(alias); // Uses the keystore to delete the entry
             keyStore.store(new java.io.FileOutputStream(keyStoreLoc), passwordArray); // Stores the keystore with the updated entries
         } catch (Exception e) {
-            errorMethods.defaultErrors(e);
+            errorMethods.exceptionErrors("There was an error while deleting the key entry", "Here is the error:\n" + e);
         }
     }
 }

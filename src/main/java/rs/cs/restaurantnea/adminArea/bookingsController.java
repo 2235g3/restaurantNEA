@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
+import rs.cs.restaurantnea.general.errorMethods;
 import rs.cs.restaurantnea.general.objects.Booking;
 import rs.cs.restaurantnea.general.objects.Search;
 import rs.cs.restaurantnea.general.objects.User;
@@ -85,9 +86,11 @@ public class bookingsController {
                 }
                 bookingAmtPplInput.setValue(Integer.parseInt(bookingDetails[0][3]));
             } else {
+                errorMethods.exceptionErrors("The booking could not be found", "The booking ID does not belong to an existing booking");
                 setAbility(true); // Disables the other inputs
             }
         } catch (Exception e) {
+            errorMethods.exceptionErrors("The booking could not be found due to an error","Here is the error:\n" + e);
             setAbility(true); // Disables the other inputs
         }
     }
@@ -101,13 +104,13 @@ public class bookingsController {
     }
     public void updateBookings(ActionEvent event) {
         Booking booking = new Booking(bookingNameInput.getText(), bookingDateInput.getValue(), String.valueOf(bookingTimeInput.getValue()).substring(0,2), Integer.parseInt(String.valueOf(bookingAmtPplInput.getValue())), null, null, -1, Integer.parseInt(bookingIDInput.getText()));
-        boolean accountDeleted = customerCUDBookings.updateBookings(booking); // Attempts to update the booking
-        if (accountDeleted) {
+        boolean bookingUpdated = adminCUDBookings.updateBookings(booking); // Attempts to update the booking
+        if (bookingUpdated) {
             setAbility(true); // Disables the input to edit a booking
         }
     }
     public void deleteBooking(ActionEvent event) {
-        customerCUDBookings.deleteBookingData(Integer.parseInt(bookingIDInput.getText())); // Attempts to delete the booking
+        adminCUDBookings.deleteBookingData(Integer.parseInt(bookingIDInput.getText())); // Attempts to delete the booking
         setAbility(true); // Disables the input to edit a booking
     }
     public void createBooking(ActionEvent event) {
