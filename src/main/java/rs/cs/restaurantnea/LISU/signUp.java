@@ -16,7 +16,7 @@ public class signUp {
         cryptMethods CM = new cryptMethods();
         databaseMethods DBM = new databaseMethods();
 
-        if (regExCheck(user, alert) != alert || user.getFName().length() < 3 || user.getLName().length() < 3 || user.getPromoEmails().equals("null")) { // Ensures valid data is entered
+        if (!regExCheck(user, alert)|| user.getFName().length() < 3 || user.getLName().length() < 3 || user.getPromoEmails().equals("null")) { // Ensures valid data is entered
             return premadeAlertErrors(alert, "One or more inputs invalid", "No account has been created"); // If any invalid data is entered, an error message is displayed
         }
 
@@ -32,7 +32,7 @@ public class signUp {
         return premadeAlertErrors(alert, "Account created!", "You can now login"); // Displays a success alert
     }
 
-    public static Alert regExCheck(User user, Alert alert) {
+    public static boolean regExCheck(User user, Alert alert) {
         // These create a matcher for each regular expression
         Matcher emailMatcher = regExMatchers.createEmailMatcher(user);
         Matcher passMatcher = regExMatchers.createPasswordMatcher(user);
@@ -40,9 +40,9 @@ public class signUp {
         Matcher lNameMatcher = regExMatchers.createNameMatcher(user.getLName());
 
         if (!emailMatcher.matches() || !passMatcher.matches() || !fNameMatcher.matches() || lNameMatcher.matches()) { // If the input is invalid, an error alert is displayed
-            return premadeAlertErrors(alert, "One or more inputs invalid", "No account has been created");
+            return false;
         }
-        return alert;
+        return true;
     }
 
     private static String[] encryptData(cryptMethods CM, User user) {

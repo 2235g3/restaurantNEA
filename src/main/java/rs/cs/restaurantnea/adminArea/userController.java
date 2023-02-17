@@ -6,9 +6,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import rs.cs.restaurantnea.LISU.generalLISUMethods;
 import rs.cs.restaurantnea.LISU.signUp;
+import rs.cs.restaurantnea.general.IOData.cryptMethods;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
 import rs.cs.restaurantnea.general.objects.Search;
 import rs.cs.restaurantnea.general.objects.User;
+
+import java.util.Base64;
 
 import static rs.cs.restaurantnea.general.errorMethods.UADeleteConfirmation;
 import static rs.cs.restaurantnea.general.errorMethods.exceptionErrors;
@@ -75,23 +78,31 @@ public class userController {
     }
     public void findUser(ActionEvent event) {
         databaseMethods DBM = new databaseMethods();
+        cryptMethods CM = new cryptMethods();
 
-        Object[] userParams = {userIDInput.getText()};
-        String[][] userDetails = DBM.getData("SELECT users.FName, users.LName, users.email, users.accountType, customers.promoEmails, customers.memberPoints FROM users, customers WHERE users.userID = customers.userID AND users.userID = ?", userParams);
-        if (userDetails.length > 0) {
-            setAbility(false);
-            fNameInput.setText(userDetails[0][0]);
-            lNameInput.setText(userDetails[0][1]);
-            emailAddressOutput.setText(userDetails[0][2]);
-            promoEmailsInput.setValue(userDetails[0][4]);
-            memberPointsInput.setText(userDetails[0][5]);
+        if (userIDInput.getText().length() > 0) { // If the user ID was inputted, the if statement is run
+            Object[] userParams = {userIDInput.getText()};
+            String[][] userDetails = DBM.getData("SELECT users.FName, users.LName, users.email, users.accountType, customers.promoEmails, customers.memberPoints, users.hashedEmails, users.IV FROM users, customers WHERE users.userID = customers.userID AND users.userID = ?", userParams);
+            for (int i = 0; i < 3; i++) {
+                userDetails[0][i] = CM.decrypt(userDetails[0][i], userDetails[0][6], Base64.getDecoder().decode(userDetails[0][7])); // Decrypts the user data
+            }
+            if (userDetails.length > 0) {
+                setAbility(false); // Enables the inputs
+
+                // Sets the inputs to the user values
+                fNameInput.setText(userDetails[0][0]);
+                lNameInput.setText(userDetails[0][1]);
+                emailAddressOutput.setText(userDetails[0][2]);
+                promoEmailsInput.setValue(userDetails[0][4]);
+                memberPointsInput.setText(userDetails[0][5]);
+            }
+            else {
+                setAbility(true); // Disables the inputs
+                exceptionErrors("User not found", "The user ID is not related to any account");
         }
-        else {
-            setAbility(false);
-            exceptionErrors("User not found", "The user ID is not related to any account");
         }
     }
-    public void setAbility(boolean disabled) {
+    public void setAbility(boolean disabled) { // Toggles whether the inputs are enables or disabled
         saveButton.setDisable(disabled);
         delButton.setDisable(disabled);
         fNameInput.setDisable(disabled);
@@ -105,7 +116,7 @@ public class userController {
         String[][] userData = viewUsers.getFilteredData(search);
         tableOutput.getItems().clear();
         for (String[] user:userData) {
-            tableOutput.getItems().add(new User(Integer.parseInt(user[0]), user[1], user[2], user[3], null, Integer.parseInt(user[4]), null, null, -1, user[5], Integer.parseInt(user[6])));
+            tableOutput.getItems().add(new User(Integer.parseInt(user[0]), user[1], user[2], user[3], null, -1, null, null, -1, user[6], Integer.parseInt(user[7])));
         }
     }
     public void updateUser(ActionEvent event) {
@@ -150,6 +161,8 @@ public class userController {
         sortByInputInit();
         cellFactoryInit();
         promoEmailsInputInit();
+        updateViewableUsers(null);
+        setAbility(true);
     }
     public void filterInputInit() {
         String[] filterItems = {"User ID: Lowest to Highest", "User ID: Highest to Lowest", "Member Points: Lowest to Highest", "Member Points: Highest to Lowest"};

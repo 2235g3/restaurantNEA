@@ -140,8 +140,8 @@ public class customerCUDBookings {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         databaseMethods DBM = new databaseMethods();
 
-        if (checkDailyBookings(DBM, booking)) { // Checks if the user already has a booking on that day
-            errorMethods.premadeAlertErrors(alert, "You already have a booking for this date", "You are only permitted one booking per day").show();
+        if (checkValidInputs(booking) || checkValidDate(booking)) {
+            errorMethods.premadeAlertErrors(alert, "One or more inputs are invalid", "The date is invalid if: \n• It is today\n•It is earlier than today\n•It is more than one year from now\nPlease check your inputs again\nBooking not made").show();
             return false;
         }
 

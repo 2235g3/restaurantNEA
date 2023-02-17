@@ -26,7 +26,7 @@ public class viewUsers {
         databaseMethods DBM = new databaseMethods();
         cryptMethods CM = new cryptMethods();
 
-        String sql = "SELECT users.userID, users.FName, users.LName, users.email, users.hashedEmails, users.IV, customers.promoEmails, customers.memberPoints FROM users, customers";
+        String sql = "SELECT users.userID, users.FName, users.LName, users.email, users.hashedEmails, users.IV, customers.promoEmails, customers.memberPoints FROM users, customers WHERE users.userID = customers.userID AND users.accountType = 2";
         Object[] params = {};
         if (search.getText().length() != 0) {
             sql = createFilteredData(sql, search);
@@ -34,30 +34,32 @@ public class viewUsers {
         }
         sql = createSortedSQL(sql, search);
         String[][] userDetails = DBM.getData(sql, params);
-        for (int i = 1; i < 4; i++) {
-            userDetails[0][i] = CM.decrypt(userDetails[0][i], userDetails[0][5], Base64.getDecoder().decode(userDetails[0][6]));
+        for (int i = 0; i < userDetails.length; i++) {
+            for (int j = 1; j < 4; j++) {
+                userDetails[i][j] = CM.decrypt(userDetails[i][j], userDetails[i][4], Base64.getDecoder().decode(userDetails[i][5]));
+            }
         }
         return userDetails;
     }
     public static String createFilteredData(String sql, Search search) {
         switch (search.getSortBy()) {
             case "User ID":
-                sql += " WHERE users.userID = ?";
+                sql += " AND users.userID = ?";
                 break;
             case "First Name":
-                sql += " WHERE users.FName = ?";
+                sql += " AND users.FName = ?";
                 break;
             case "Last Name":
-                sql += " WHERE users.LName = ?";
+                sql += " AND users.LName = ?";
                 break;
             case "Email Address":
-                sql += " WHERE users.email = ?";
+                sql += " AND users.email = ?";
                 break;
             case "Promo Emails":
-                sql += " WHERE customers.promoEmails = ?";
+                sql += " AND customers.promoEmails = ?";
                 break;
             case "memberPoints":
-                sql += " WHERE customers.memberPoints = ?";
+                sql += " AND customers.memberPoints = ?";
                 break;
         }
         return sql;

@@ -13,8 +13,8 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.web.HTMLEditor?>
 
-<AnchorPane prefHeight="635.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rs.cs.restaurantnea.adminArea.emailController">
-    <Button layoutX="1.0" layoutY="65.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" text="Users" textAlignment="CENTER" />
+<AnchorPane prefHeight="635.0" prefWidth="600.0" stylesheets="@stylesheets/buttons.css" xmlns="http://javafx.com/javafx/1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rs.cs.restaurantnea.adminArea.emailController">
+    <Button layoutX="1.0" layoutY="65.0" mnemonicParsing="false" onAction="#toUsers" prefHeight="25.0" prefWidth="150.0" text="Users" textAlignment="CENTER" />
     <Button layoutX="151.0" layoutY="65.0" mnemonicParsing="false" onAction="#toBookings" prefHeight="25.0" prefWidth="150.0" text="Bookings" textAlignment="CENTER" />
     <Button disable="true" layoutX="301.0" layoutY="65.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" text="Emails" textAlignment="CENTER" />
     <Button layoutX="451.0" layoutY="65.0" mnemonicParsing="false" onAction="#signOut" prefHeight="25.0" prefWidth="149.0" text="Sign Out" textAlignment="CENTER" />

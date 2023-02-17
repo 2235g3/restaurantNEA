@@ -25,7 +25,7 @@ public class viewBookings {
             sql = createFilteredSQL(sql, search);
             params = new Object[] {user.getCustomerID(), "%" + search.getText() + "%" }; // Creates the parameters for the search query
         }
-        createSortedSQL(sql, search); // If the data is to be in any specific order, this adds it to the SQL query
+        sql = createSortedSQL(sql, search); // If the data is to be in any specific order, this adds it to the SQL query
         if (params[0].equals("InvalidParam")) { // If the parameter array has no valid parameters, new params are added
             params[0] = user.getCustomerID();
         }
@@ -53,9 +53,9 @@ public class viewBookings {
         return sql;
     }
     public static String createSortedSQL(String sql, Search search) {
-        switch (search.getFilter()) { // Searches through the valid ways of oredering the data, adds the corresponding order to the SQL query
-            case "Date: Latest - Earliest":
-                sql += " ORDER BY Day DESC";
+        switch (search.getFilter()) { // Searches through the valid ways of ordering the data, adds the corresponding order to the SQL query
+            case "Date: Earliest - Latest":
+                sql += " ORDER BY Day ASC";
                 break;
             case "Amount of people: Least - Most":
                 sql += " ORDER BY amountOfPeople ASC";

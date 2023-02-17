@@ -26,10 +26,12 @@ public class CUDUsers {
 
         user.setHashedEmail(CM.hashing(user.getEmail()));
         Object[] IVParams = {user.getUserID()};
-        user.setIV(DBM.getData("SELECT IV FROM users WHERE userID = ?", IVParams)[0][0]);
-        if (user.getFName().length() < 3 || user.getLName().length() < 3 || regExCheck(user)) {
+        user.setIV(DBM.getData("SELECT IV FROM users WHERE userID = ?", IVParams)[0][0]); // Gets the IV from the database to allow encryption
+        if (user.getFName().length() < 3 || user.getLName().length() < 3 || regExCheck(user)) { // Checks for invalid inputs
             errorMethods.exceptionErrors("Account was not updated","The first and/or last name is incorrect");
         }
+
+        // Updates the customer data in the database
         user.setFName(CM.encrypt(user.getFName(), user.getHashedEmail(), false, new IvParameterSpec(Base64.getDecoder().decode(user.getIV()))));
         user.setLName(CM.encrypt(user.getLName(), user.getHashedEmail(), false, new IvParameterSpec(Base64.getDecoder().decode(user.getIV()))));
         Object[] updatedUserParams = {user.getFName(), user.getLName(), user.getUserID()};
@@ -37,11 +39,11 @@ public class CUDUsers {
         Object[] updatedCustomerParams = {user.getPromoEmails(), user.getMemberPoints(), user.getUserID()};
         DBM.CUDData("UPDATE customers SET promoEmails = ?, memberPoints = ? WHERE userID = ?", updatedCustomerParams);
     }
-    public static void deleteUser(User user) {
+    public static void deleteUser(User user) { // Deletes specific customer data
         databaseMethods DBM = new databaseMethods();
 
         Object[] getCustIDParams = {user.getUserID()};
-        user.setCustomerID(Integer.parseInt(DBM.getData("SELECT customerID FROM customers WHERE userID = ?", getCustIDParams)[0][0]));
+        user.setCustomerID(Integer.parseInt(DBM.getData("SELECT custID FROM customers WHERE userID = ?", getCustIDParams)[0][0]));
         userAccount.deleteData(user);
         userAccount.deleteKeyEntry(user);
     }

@@ -14,7 +14,7 @@ public class adminCUDBookings {
 
         Object[] customerParams= {customerID};
         String[][] countCustomers = DBM.getData("SELECT COUNT(custID) FROM customers WHERE custID = ?", customerParams);
-        if (countCustomers.length == 1) {
+        if (countCustomers.length == 1) { // If there the customer exists in the system, true is returned
             return true;
         }
         else {

@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
-import rs.cs.restaurantnea.general.errorMethods;
 import rs.cs.restaurantnea.general.objects.Booking;
 import rs.cs.restaurantnea.general.objects.Search;
 import rs.cs.restaurantnea.general.objects.User;
@@ -82,8 +81,10 @@ public class bookingController {
         Booking newBooking = new Booking(nameInput.getText(), dateInput.getValue(), String.valueOf(timeInput.getValue()), amtPpl,String.valueOf(typeInput.getValue()), user, -1, -1); // Creates a temp booking obj
         Alert alert = customerCUDBookings.makeBooking(newBooking); // Attempts to make the booking
         alert.show();
-        if (alert == errorMethods.premadeAlertErrors(alert, "Your booking has been made", newBooking.getName() + ", we are looking forward to seeing you on " + newBooking.getDate().toString() + " at " + newBooking.getTime())) {
+        if (newBooking.getDate() != null) {
+        if (alert.getContentText().equals(newBooking.getName() + ", we are looking forward to seeing you on " + newBooking.getDate().toString() + " at " + newBooking.getTime())) {
             user.setMemberPoints(user.getMemberPoints() + 5);
+        }
         }
     }
     public void findBooking(ActionEvent event) {

@@ -73,21 +73,23 @@ public class bookingsController {
         try {
             databaseMethods DBM = new databaseMethods();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Inits the date formatter, formats String to LocalDate
-            Object[] params = {Integer.parseInt(bookingIDInput.getText())};
-            String[][] bookingDetails = DBM.getData("SELECT bookingName, Day, Time, amountOfPeople FROM bookings WHERE bookingID = ?", params); // Selects the user specific booking data
-            if (bookingDetails.length != 0) { // If the booking exists
-                setAbility(false); // Enables the other inputs
-                bookingNameInput.setText(bookingDetails[0][0]); // These set the values of the inputs to the values of the booking the user wants to edit
-                bookingDateInput.setValue(LocalDate.parse(bookingDetails[0][1], formatter));
-                if (bookingDetails[0][2].length() == 1) {
-                    bookingTimeInput.setValue("0" + bookingDetails[0][2] + ":00");
+            if (bookingIDInput.getText().length() > 0) {
+                Object[] params = {Integer.parseInt(bookingIDInput.getText())};
+                String[][] bookingDetails = DBM.getData("SELECT bookingName, Day, Time, amountOfPeople FROM bookings WHERE bookingID = ?", params); // Selects the user specific booking data
+                if (bookingDetails.length != 0) { // If the booking exists
+                    setAbility(false); // Enables the other inputs
+                    bookingNameInput.setText(bookingDetails[0][0]); // These set the values of the inputs to the values of the booking the user wants to edit
+                    bookingDateInput.setValue(LocalDate.parse(bookingDetails[0][1], formatter));
+                    if (bookingDetails[0][2].length() == 1) {
+                        bookingTimeInput.setValue("0" + bookingDetails[0][2] + ":00");
+                    } else {
+                        bookingTimeInput.setValue(bookingDetails[0][2] + ":00");
+                    }
+                    bookingAmtPplInput.setValue(Integer.parseInt(bookingDetails[0][3]));
                 } else {
-                    bookingTimeInput.setValue(bookingDetails[0][2] + ":00");
+                    errorMethods.exceptionErrors("The booking could not be found", "The booking ID does not belong to an existing booking");
+                    setAbility(true); // Disables the other inputs
                 }
-                bookingAmtPplInput.setValue(Integer.parseInt(bookingDetails[0][3]));
-            } else {
-                errorMethods.exceptionErrors("The booking could not be found", "The booking ID does not belong to an existing booking");
-                setAbility(true); // Disables the other inputs
             }
         } catch (Exception e) {
             errorMethods.exceptionErrors("The booking could not be found due to an error","Here is the error:\n" + e);
@@ -129,10 +131,15 @@ public class bookingsController {
                 alert.show();
             }
             else {
-                // [TBA]
+                errorMethods.exceptionErrors("The customer ID is not recognised", "Please enter a valid ID");
             }
         } catch (Exception e) {
-            // [TBA]
+            if (custIDField.getText().length() == 0) {
+                errorMethods.exceptionErrors("The user ID field is empty", "Please enter a valid ID");
+            }
+            else {
+                errorMethods.defaultErrors(e);
+            }
         }
     }
     public void updateViewableBookings(ActionEvent event) {
