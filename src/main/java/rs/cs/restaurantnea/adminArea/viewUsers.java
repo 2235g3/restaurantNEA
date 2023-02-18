@@ -16,9 +16,10 @@ public class viewUsers {
         databaseMethods DBM = new databaseMethods();
         cryptMethods CM = new cryptMethods();
 
+        // Gets the user data
         String[][] userDetails = DBM.getData("SELECT users.userID, users.FName, users.LName, users.email, users.accountType, users.hashedEmails, users.IV, customers.promoEmails, customers.memberPoints FROM users, customers WHERE users.userID = customers.customerID ORDER BY users.userID ASC", new Object[] {});
         for (int i = 1; i < 4; i++) {
-            userDetails[0][i] = CM.decrypt(userDetails[0][i], userDetails[0][5], Base64.getDecoder().decode(userDetails[0][6]));
+            userDetails[0][i] = CM.decrypt(userDetails[0][i], userDetails[0][5], Base64.getDecoder().decode(userDetails[0][6])); // Decrypts the user data
         }
         return userDetails;
     }
@@ -29,20 +30,20 @@ public class viewUsers {
         String sql = "SELECT users.userID, users.FName, users.LName, users.email, users.hashedEmails, users.IV, customers.promoEmails, customers.memberPoints FROM users, customers WHERE users.userID = customers.userID AND users.accountType = 2";
         Object[] params = {};
         if (search.getText().length() != 0) {
-            sql = createFilteredData(sql, search);
-            params = new Object[] {"%" + search.getText() + "%"};
+            sql = createFilteredData(sql, search); // Creates the filtered sql query
+            params = new Object[] {"%" + search.getText() + "%"}; // Creates the params to find what the user searched
         }
-        sql = createSortedSQL(sql, search);
-        String[][] userDetails = DBM.getData(sql, params);
+        sql = createSortedSQL(sql, search); // Creates the ordered sql query
+        String[][] userDetails = DBM.getData(sql, params); // Gets the user details
         for (int i = 0; i < userDetails.length; i++) {
             for (int j = 1; j < 4; j++) {
-                userDetails[i][j] = CM.decrypt(userDetails[i][j], userDetails[i][4], Base64.getDecoder().decode(userDetails[i][5]));
+                userDetails[i][j] = CM.decrypt(userDetails[i][j], userDetails[i][4], Base64.getDecoder().decode(userDetails[i][5])); // Decrypts the user data
             }
         }
         return userDetails;
     }
     public static String createFilteredData(String sql, Search search) {
-        switch (search.getSortBy()) {
+        switch (search.getSortBy()) { // Finds the corresponding search to add to the query
             case "User ID":
                 sql += " AND users.userID = ?";
                 break;
@@ -65,7 +66,7 @@ public class viewUsers {
         return sql;
     }
     public static String createSortedSQL(String sql, Search search) {
-        switch (search.getFilter()) {
+        switch (search.getFilter()) { // Finds the corresponding order to add to the query
             case "User ID: Lowest to Highest":
                 sql += " ORDER BY users.userID ASC";
                 break;

@@ -114,8 +114,8 @@ public class userController {
     public void updateViewableUsers(ActionEvent event) {
         Search search = new Search(searchInput.getText(), String.valueOf(filterInput.getValue()), String.valueOf(sortByInput.getValue()));
         String[][] userData = viewUsers.getFilteredData(search);
-        tableOutput.getItems().clear();
-        for (String[] user:userData) {
+        tableOutput.getItems().clear(); // Clears the table to remove duplicates
+        for (String[] user:userData) { // Adds the new data
             tableOutput.getItems().add(new User(Integer.parseInt(user[0]), user[1], user[2], user[3], null, -1, null, null, -1, user[6], Integer.parseInt(user[7])));
         }
     }
@@ -148,8 +148,8 @@ public class userController {
     public void deleteUser(ActionEvent event) {
         if (UADeleteConfirmation().isPresent()) {
             User selectedUser = new User(Integer.parseInt(userIDInput.getText()), fNameInput.getText(), lNameInput.getText(), emailAddressOutput.getText(), null, -1, null, null, -1, String.valueOf(promoEmailsInput.getValue()), Integer.parseInt(memberPointsInput.getText()));
-            CUDUsers.deleteUser(selectedUser);
-            setAbility(true);
+            CUDUsers.deleteUser(selectedUser); // Deletes the user
+            setAbility(true); // Disables the inputs
             exceptionErrors("The account has now been deleted", "This account no longer exists");
         }
         else {
@@ -164,21 +164,21 @@ public class userController {
         updateViewableUsers(null);
         setAbility(true);
     }
-    public void filterInputInit() {
+    public void filterInputInit() { // Adds the filter items to the choicebox
         String[] filterItems = {"User ID: Lowest to Highest", "User ID: Highest to Lowest", "Member Points: Lowest to Highest", "Member Points: Highest to Lowest"};
         for (String item:filterItems) {
             filterInput.getItems().add(item);
         }
         filterInput.setValue("User ID: Lowest to Highest");
     }
-    public void sortByInputInit() {
+    public void sortByInputInit() { // Adds the sort by items to the choicebox
         String[] sortByItems = {"User ID", "First Name", "Last Name", "Email Address", "Promo Emails", "Member Points"};
         for (String item:sortByItems) {
             sortByInput.getItems().add(item);
         }
         sortByInput.setValue("User ID");
     }
-    public void cellFactoryInit() {
+    public void cellFactoryInit() { // Creates the cell factory for the columns in the table
         userIDCol.setCellValueFactory(new PropertyValueFactory<>("UserID"));
         fNameCol.setCellValueFactory(new PropertyValueFactory<>("FName"));
         lNameCol.setCellValueFactory(new PropertyValueFactory<>("LName"));
@@ -186,7 +186,7 @@ public class userController {
         promoEmailsCol.setCellValueFactory(new PropertyValueFactory<>("PromoEmails"));
         memberPointsCol.setCellValueFactory(new PropertyValueFactory<>("MemberPoints"));
     }
-    public void promoEmailsInputInit() {
+    public void promoEmailsInputInit() { // Adds the promoEmails items to the choicebox
         String[] promoEmailsItems = {"Never", "Yearly", "Monthly", "Weekly"};
         for (String item:promoEmailsItems) {
             promoEmailField.getItems().add(item);

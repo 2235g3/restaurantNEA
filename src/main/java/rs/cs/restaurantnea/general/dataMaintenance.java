@@ -1,6 +1,6 @@
 package rs.cs.restaurantnea.general;
 
-public class dataMaintenance {
+public class dataMaintenance { // I was planning on adding a mergesort algorithm in this class but decided against it
     public static boolean binarySearch(String[][] arr, int val, int mid) { // This recursive algorithm calls itself to find a value in an ordered 2d array
         boolean found = false; // If not changed, then the value has not been found, and it will return false
         mid /= 2; // Finds the midpoint of the array or subarray to be searched
