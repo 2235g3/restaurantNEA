@@ -13,8 +13,8 @@
 
 <AnchorPane prefHeight="268.0" prefWidth="421.0" stylesheets="@stylesheets/buttons.css" xmlns="http://javafx.com/javafx/1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rs.cs.restaurantnea.LISU.LISUController">
    <children>
-      <TextField fx:id="emailInput" layoutX="122.0" layoutY="130.0" prefHeight="25.0" prefWidth="175.0" promptText="Email" text="restaurantneamanager@gmail.com" />
-      <PasswordField fx:id="passwordInput" layoutX="122.0" layoutY="181.0" prefHeight="25.0" prefWidth="175.0" promptText="Password" text="AdminPassword123!" />
+      <TextField fx:id="emailInput" layoutX="122.0" layoutY="130.0" prefHeight="25.0" prefWidth="175.0" promptText="Email" />
+      <PasswordField fx:id="passwordInput" layoutX="122.0" layoutY="181.0" prefHeight="25.0" prefWidth="175.0" promptText="Password" />
       <TextField fx:id="passwordShownInput" layoutX="122.0" layoutY="181.0" prefHeight="25.0" prefWidth="175.0" promptText="Password" visible="false" />
       <CheckBox layoutX="305.0" layoutY="185.0" mnemonicParsing="false" onAction="#showHidePass" text="Show Password" />
       <Button layoutX="14.0" layoutY="228.0" mnemonicParsing="false" onAction="#backToHome" text="Back" />

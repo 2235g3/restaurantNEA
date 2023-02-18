@@ -15,7 +15,7 @@ import static rs.cs.restaurantnea.general.errorMethods.*;
 public class userAccount {
     public static User saveUserData(User user, String[] inputFields) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        if (regExCheck(alert, user) != alert || inputFields[0].length() < 3 || inputFields[1].length() < 3 || inputFields[2].equals("null")) { // Checks if the inputted values are valid
+        if (regExCheck(alert, user)  || inputFields[0].length() < 3 || inputFields[1].length() < 3 || inputFields[2].equals("null")) { // Checks if the inputted values are valid
             alert = premadeAlertErrors(alert, "One or more inputs invalid", "Your data has not been saved");
             alert.show();
             return user;
@@ -25,13 +25,13 @@ public class userAccount {
         updateUserData(user, encryptedFields); // Updates the data
         return saveSuccess(user, inputFields, alert); // Returns the new user object
     }
-    public static Alert regExCheck(Alert alert, User user) {
+    public static boolean regExCheck(Alert alert, User user) {
         Matcher fNameMatcher = regExMatchers.createNameMatcher(user.getFName());
         Matcher lNameMatcher = regExMatchers.createNameMatcher(user.getLName());
         if (!fNameMatcher.matches() || !lNameMatcher.matches()) { // Checks that the inputted names match the regex
-            return premadeAlertErrors(alert, "One or more inputs invalid", "Your data has not been saved");
+            return true;
         }
-        return alert;
+        return false;
     }
     public static void updateUserData(User user, String[] inputFields) {
         databaseMethods DBM = new databaseMethods();
