@@ -2,6 +2,7 @@ package rs.cs.restaurantnea.adminArea;
 
 import rs.cs.restaurantnea.general.IOData.cryptMethods;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
+import rs.cs.restaurantnea.general.errorMethods;
 import rs.cs.restaurantnea.general.objects.Search;
 
 import java.util.Base64;
@@ -30,8 +31,17 @@ public class viewUsers {
         String sql = "SELECT users.userID, users.FName, users.LName, users.email, users.hashedEmails, users.IV, customers.promoEmails, customers.memberPoints FROM users, customers WHERE users.userID = customers.userID AND users.accountType = 2";
         Object[] params = {};
         if (search.getText().length() != 0) {
-            sql = createFilteredData(sql, search); // Creates the filtered sql query
-            params = new Object[] {"%" + search.getText() + "%"}; // Creates the params to find what the user searched
+            try {
+                if (!search.getSortBy().equals("User ID")) { // Prevents unnecessary errors
+                    params = new Object[]{"%" + search.getText() + "%"}; // Creates the params to find what the user searched
+                    sql = createFilteredData(sql, search); // Creates the filtered sql query
+                } else if (Integer.parseInt(search.getText()) > -1) { // Searching for user ID is quite specific and requires an integer input
+                    params = new Object[]{Integer.parseInt(search.getText())};
+                    sql = createFilteredData(sql, search); // Creates the filtered sql query
+                }
+            } catch (Exception e) {
+                errorMethods.exceptionErrors("Invalid user ID", "Please enter a valid user ID");
+            }
         }
         sql = createSortedSQL(sql, search); // Creates the ordered sql query
         String[][] userDetails = DBM.getData(sql, params); // Gets the user details

@@ -42,9 +42,6 @@ public class viewBookings {
             case "Booking ID":
                 sql += " WHERE bookingID LIKE ?";
                 break;
-            case "Event Type":
-                sql += "WHERE eventType LIKE ?";
-                break;
         }
         return sql;
     }

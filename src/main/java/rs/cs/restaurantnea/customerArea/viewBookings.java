@@ -57,6 +57,9 @@ public class viewBookings {
             case "Date: Earliest - Latest":
                 sql += " ORDER BY Day ASC";
                 break;
+            case "Date: Latest - Earliest":
+                sql += " ORDER BY Day DESC";
+                break;
             case "Amount of people: Least - Most":
                 sql += " ORDER BY amountOfPeople ASC";
                 break;

@@ -12,6 +12,7 @@ import rs.cs.restaurantnea.general.objects.Search;
 import rs.cs.restaurantnea.general.objects.User;
 
 import java.util.Base64;
+import java.util.Optional;
 
 import static rs.cs.restaurantnea.general.errorMethods.UADeleteConfirmation;
 import static rs.cs.restaurantnea.general.errorMethods.exceptionErrors;
@@ -80,26 +81,32 @@ public class userController {
         databaseMethods DBM = new databaseMethods();
         cryptMethods CM = new cryptMethods();
 
-        if (userIDInput.getText().length() > 0) { // If the user ID was inputted, the if statement is run
-            Object[] userParams = {userIDInput.getText()};
-            String[][] userDetails = DBM.getData("SELECT users.FName, users.LName, users.email, users.accountType, customers.promoEmails, customers.memberPoints, users.hashedEmails, users.IV FROM users, customers WHERE users.userID = customers.userID AND users.userID = ?", userParams);
-            for (int i = 0; i < 3; i++) {
-                userDetails[0][i] = CM.decrypt(userDetails[0][i], userDetails[0][6], Base64.getDecoder().decode(userDetails[0][7])); // Decrypts the user data
-            }
-            if (userDetails.length > 0) {
-                setAbility(false); // Enables the inputs
+        try {
+            if (Integer.parseInt(userIDInput.getText()) > -1 || userIDInput.getText().length() > 0) { // If the user ID was inputted, the if statement is run
+                Object[] userParams = {userIDInput.getText()};
+                String[][] userDetails = DBM.getData("SELECT users.FName, users.LName, users.email, users.accountType, customers.promoEmails, customers.memberPoints, users.hashedEmails, users.IV FROM users, customers WHERE users.userID = customers.userID AND users.userID = ?", userParams);
+                for (int i = 0; i < 3; i++) {
+                    userDetails[0][i] = CM.decrypt(userDetails[0][i], userDetails[0][6], Base64.getDecoder().decode(userDetails[0][7])); // Decrypts the user data
+                }
+                if (userDetails.length > 0) {
+                    setAbility(false); // Enables the inputs
 
-                // Sets the inputs to the user values
-                fNameInput.setText(userDetails[0][0]);
-                lNameInput.setText(userDetails[0][1]);
-                emailAddressOutput.setText(userDetails[0][2]);
-                promoEmailsInput.setValue(userDetails[0][4]);
-                memberPointsInput.setText(userDetails[0][5]);
+                    // Sets the inputs to the user values
+                    fNameInput.setText(userDetails[0][0]);
+                    lNameInput.setText(userDetails[0][1]);
+                    emailAddressOutput.setText(userDetails[0][2]);
+                    promoEmailsInput.setValue(userDetails[0][4]);
+                    memberPointsInput.setText(userDetails[0][5]);
+                } else {
+                    setAbility(true); // Disables the inputs
+                    exceptionErrors("User not found", "The user ID is not related to any account");
+                }
             }
             else {
-                setAbility(true); // Disables the inputs
                 exceptionErrors("User not found", "The user ID is not related to any account");
-        }
+            }
+        } catch (Exception e) {
+            exceptionErrors("User not found", "The user ID is not related to any account");
         }
     }
     public void setAbility(boolean disabled) { // Toggles whether the inputs are enables or disabled
@@ -146,7 +153,8 @@ public class userController {
         }
     }
     public void deleteUser(ActionEvent event) {
-        if (UADeleteConfirmation().isPresent()) {
+        Optional<ButtonType> confirmation = UADeleteConfirmation();
+        if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
             User selectedUser = new User(Integer.parseInt(userIDInput.getText()), fNameInput.getText(), lNameInput.getText(), emailAddressOutput.getText(), null, -1, null, null, -1, String.valueOf(promoEmailsInput.getValue()), Integer.parseInt(memberPointsInput.getText()));
             CUDUsers.deleteUser(selectedUser); // Deletes the user
             setAbility(true); // Disables the inputs
@@ -192,5 +200,6 @@ public class userController {
             promoEmailField.getItems().add(item);
             promoEmailsInput.getItems().add(item);
         }
+        promoEmailField.setValue("Never");
     }
 }

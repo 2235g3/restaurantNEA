@@ -4,12 +4,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import rs.cs.restaurantnea.customerArea.customerCUDBookings;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
 import rs.cs.restaurantnea.general.errorMethods;
 import rs.cs.restaurantnea.general.objects.Booking;
 import rs.cs.restaurantnea.general.objects.Search;
 import rs.cs.restaurantnea.general.objects.User;
-import rs.cs.restaurantnea.customerArea.customerCUDBookings;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -105,10 +105,14 @@ public class bookingsController {
         bookingTimeInput.setDisable(disabled);
     }
     public void updateBookings(ActionEvent event) {
-        Booking booking = new Booking(bookingNameInput.getText(), bookingDateInput.getValue(), String.valueOf(bookingTimeInput.getValue()).substring(0,2), Integer.parseInt(String.valueOf(bookingAmtPplInput.getValue())), null, null, -1, Integer.parseInt(bookingIDInput.getText()));
-        boolean bookingUpdated = adminCUDBookings.updateBookings(booking); // Attempts to update the booking
-        if (bookingUpdated) {
-            setAbility(true); // Disables the input to edit a booking
+        try {
+            Booking booking = new Booking(bookingNameInput.getText(), bookingDateInput.getValue(), String.valueOf(bookingTimeInput.getValue()).substring(0, 2), Integer.parseInt(String.valueOf(bookingAmtPplInput.getValue())), null, null, -1, Integer.parseInt(bookingIDInput.getText()));
+            boolean bookingUpdated = adminCUDBookings.updateBookings(booking); // Attempts to update the booking
+            if (bookingUpdated) {
+                setAbility(true); // Disables the input to edit a booking
+            }
+        } catch (Exception e) {
+            errorMethods.exceptionErrors("Some inputs are invalid", "Please enter valid inputs");
         }
     }
     public void deleteBooking(ActionEvent event) {
@@ -156,6 +160,7 @@ public class bookingsController {
         amtPplChoiceBoxInit();
         filterChoiceBoxInit();
         sortByChoiceBoxInit();
+        typeChoiceBoxInit();
         cellFactoryInit();
         tableInit();
     }
@@ -171,18 +176,31 @@ public class bookingsController {
         for (int i = 9; i < 21; i++) {
             if (i < 10) {
                 bookingTimeInput.getItems().add("0" + i + ":00");
+                bookingTimeField.getItems().add("0" + i + ":00");
 
             }
             else {
                 bookingTimeInput.getItems().add(i + ":00");
+                bookingTimeField.getItems().add(i + ":00");
             }
         }
+        bookingTimeField.setValue("09:00");
+    }
+    public void typeChoiceBoxInit() { // Adds values to the event type choice box
+        String[] eventType = {"General Eating", "School Trip", "Business Meal", "Birthday Meal", "Other"};
+        for (String event:eventType) {
+            eventTypeField.getItems().add(event);
+        }
+        eventTypeField.setValue("General Eating");
     }
     public void amtPplChoiceBoxInit() { // Adds values to the amount of ppl choice box
         for (int i = 1; i < 21; i++) {
             bookingAmtPplInput.getItems().add(i);
+            bookingAmtPplField.getItems().add(i);
         }
+        bookingAmtPplField.getItems().add("Big table (more than 20 people)");
         bookingAmtPplInput.getItems().add("Big table (more than 20 people)");
+        bookingAmtPplField.setValue(1);
     }
     public void filterChoiceBoxInit() { // Adds values to the filter choice box
         String[] filterItems = {"Date: Latest - Earliest", "Date: Earliest - Latest", "Amount of people: Least - Most", "Amount of people: Most - Least"};
@@ -192,7 +210,7 @@ public class bookingsController {
         filterInput.setValue("Date: Latest - Earliest");
     }
     public void sortByChoiceBoxInit() { // Adds values to the sort by choice box
-        String[] sortItems = {"Name", "Date", "Time", "Amount of people", "Event Type", "Booking ID"};
+        String[] sortItems = {"Name", "Date", "Time", "Amount of people", "Booking ID"};
         for (String item:sortItems) {
             sortByInput.getItems().add(item);
         }

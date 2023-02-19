@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import rs.cs.restaurantnea.GeneralController;
 import rs.cs.restaurantnea.general.objects.User;
 
 public class accountController {
@@ -45,8 +44,7 @@ public class accountController {
         displayUserData();
     }
     public void deleteAccount(ActionEvent event) {
-        userAccount.deleteAccount(user);
-        new GeneralController().selectNewScene("welcomePage.fxml", event);
+        userAccount.deleteAccount(user, event);
     }
     public void addChoiceBoxItems() {
         // These lines add items to the ChoiceBox promoEmailsField

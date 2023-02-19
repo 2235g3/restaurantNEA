@@ -1,6 +1,7 @@
 package rs.cs.restaurantnea.customerArea;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import rs.cs.restaurantnea.general.objects.Booking;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
 import rs.cs.restaurantnea.general.dataMaintenance;
@@ -9,6 +10,7 @@ import rs.cs.restaurantnea.general.regExMatchers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class customerCUDBookings {
     public static Alert makeBooking(Booking booking) {
@@ -60,8 +62,8 @@ public class customerCUDBookings {
         return false;
     }
     public static boolean checkDailyBookings(databaseMethods DBM, Booking booking) {
-        Object[] dateParam = {booking.getDate().toString(), booking.getUser().getCustomerID()}; // Creates the parameters
-        String[][] countBookings = DBM.getData("SELECT COUNT(bookingID) FROM bookings WHERE Day = ? AND custID = ?", dateParam); // Counts how many bookings the user has on one day, can only be 1 or 0
+        Object[] dateParam = {booking.getDate().toString(), booking.getUser().getCustomerID(), booking.getBookingID()}; // Creates the parameters
+        String[][] countBookings = DBM.getData("SELECT COUNT(bookingID) FROM bookings WHERE Day = ? AND custID = ? AND NOT bookingID = ?", dateParam); // Counts how many bookings the user has on one day, can only be 1 or 0
         if (countBookings[0][0].equals("1")) {
             return true;
         }
@@ -69,19 +71,24 @@ public class customerCUDBookings {
     }
     public static String[][] findTblID(databaseMethods DBM, String[][] overlappedBookings) {
         String[][] bookedTables = {}; // Inits the array
-        if (overlappedBookings.length > 0) { // If there are overlapping bookings this is true
+        if (overlappedBookings.length > 1) { // If there are overlapping bookings this is true
             // Because the amount of bookings that overlap varies, this just creates a dynamic string so that the correct amount of parameters are entered
             String bookedTablesSQL = "SELECT tableID FROM tablesBookingLink WHERE bookingID IN (";
-            Object[] bookedTablesParams = {};
+            ArrayList<Object> bookedTablesParams = new ArrayList<>();
             for (int i = 0; i < overlappedBookings.length; i++) { // Loops through to add the right amount of parameters
-                bookedTablesParams[i] = overlappedBookings[i][0];
+                bookedTablesParams.add(overlappedBookings[i][0]);
                 bookedTablesSQL += "?";
                 if (i != overlappedBookings.length - 1) { // The last parameter does not need a comma, this would give an error
                     bookedTablesSQL += ",";
                 }
             }
             bookedTablesSQL += ") SORT BY ASC";
-            bookedTables = DBM.getData(bookedTablesSQL, bookedTablesParams); // Gets tableIDs of bookings at a similar time
+            Object[] params = bookedTablesParams.toArray();
+            return DBM.getData(bookedTablesSQL, params); // Gets tableIDs of bookings at a similar time
+        }
+        else if (overlappedBookings.length == 1) {
+            Object[] params = {overlappedBookings[0][0]};
+            return DBM.getData("SELECT tableID FROM tablesBookingLink WHERE bookingID = ?", params);
         }
         return bookedTables;
     }
@@ -91,8 +98,8 @@ public class customerCUDBookings {
         return potentialTableID;
     }
     public static String[][] findOverlappedBookings(databaseMethods DBM, Booking booking) {
-        Object[] bookingParams = {Integer.parseInt(booking.getTime().substring(0,1)) - 4, Integer.parseInt(booking.getTime().substring(0,1)) + 4, booking.getDate().toString()};
-        String[][] overlappedBookings = DBM.getData("SELECT bookingID FROM bookings WHERE (time BETWEEN ? AND ?) AND (Day) = ?", bookingParams); // Finds bookings that overlap with the new booking
+        Object[] bookingParams = {Integer.parseInt(booking.getTime().substring(0,2)) - 4, Integer.parseInt(booking.getTime().substring(0,2)) + 4, booking.getDate().toString(), booking.getBookingID()};
+        String[][] overlappedBookings = DBM.getData("SELECT bookingID FROM bookings WHERE Time BETWEEN ? AND ? AND Day = ? AND NOT bookingID = ?", bookingParams); // Finds bookings that overlap with the new booking
         return overlappedBookings;
     }
     public static ArrayList<Integer> findAvailableBookings(String[][] potentialTableID, String[][] bookedTables) {
@@ -126,7 +133,8 @@ public class customerCUDBookings {
     }
     public static void deleteBookingData(int bookingID) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        if (errorMethods.EBDeleteConfirmation().isPresent()) { // Runs if the user confirms they want to delete their booking
+        Optional<ButtonType> confirmation = errorMethods.EBDeleteConfirmation();
+        if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) { // Runs if the user confirms they want to delete their booking
             databaseMethods DBM = new databaseMethods();
             Object[] deleteParam = {bookingID}; // The only parameter needed is the booking id for both queries
             DBM.CUDData("DELETE FROM bookings WHERE bookingID = ?", deleteParam); // Deletes the actual booking
@@ -142,6 +150,10 @@ public class customerCUDBookings {
 
         if (checkValidInputs(booking) || checkValidDate(booking)) {
             errorMethods.premadeAlertErrors(alert, "One or more inputs are invalid", "The date is invalid if: \n• It is today\n•It is earlier than today\n•It is more than one year from now\nPlease check your inputs again\nBooking not made").show();
+            return false;
+        }
+        if (checkDailyBookings(DBM, booking)) { // Checks if the user already has a booking on that day
+            errorMethods.premadeAlertErrors(alert, "You already have a booking for this date", "You are only permitted one booking per day").show();
             return false;
         }
 

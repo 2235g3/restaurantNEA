@@ -16,9 +16,9 @@ public class CUDUsers {
         Matcher fNameMatcher = regExMatchers.createNameMatcher(user.getFName());
         Matcher lNameMatcher = regExMatchers.createNameMatcher(user.getLName());
         if (!fNameMatcher.matches() || !lNameMatcher.matches()) { // Checks that the inputted names match the regex
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
     public static void updateUser(User user) {
         cryptMethods CM = new cryptMethods();
@@ -30,14 +30,16 @@ public class CUDUsers {
         if (user.getFName().length() < 3 || user.getLName().length() < 3 || regExCheck(user)) { // Checks for invalid inputs
             errorMethods.exceptionErrors("Account was not updated","The first and/or last name is incorrect");
         }
-
-        // Updates the customer data in the database
-        user.setFName(CM.encrypt(user.getFName(), user.getHashedEmail(), false, new IvParameterSpec(Base64.getDecoder().decode(user.getIV()))));
-        user.setLName(CM.encrypt(user.getLName(), user.getHashedEmail(), false, new IvParameterSpec(Base64.getDecoder().decode(user.getIV()))));
-        Object[] updatedUserParams = {user.getFName(), user.getLName(), user.getUserID()};
-        DBM.CUDData("UPDATE users SET FName = ?, LName = ? WHERE userID = ?", updatedUserParams);
-        Object[] updatedCustomerParams = {user.getPromoEmails(), user.getMemberPoints(), user.getUserID()};
-        DBM.CUDData("UPDATE customers SET promoEmails = ?, memberPoints = ? WHERE userID = ?", updatedCustomerParams);
+        else {
+            // Updates the customer data in the database
+            user.setFName(CM.encrypt(user.getFName(), user.getHashedEmail(), false, new IvParameterSpec(Base64.getDecoder().decode(user.getIV()))));
+            user.setLName(CM.encrypt(user.getLName(), user.getHashedEmail(), false, new IvParameterSpec(Base64.getDecoder().decode(user.getIV()))));
+            Object[] updatedUserParams = {user.getFName(), user.getLName(), user.getUserID()};
+            DBM.CUDData("UPDATE users SET FName = ?, LName = ? WHERE userID = ?", updatedUserParams);
+            Object[] updatedCustomerParams = {user.getPromoEmails(), user.getMemberPoints(), user.getUserID()};
+            DBM.CUDData("UPDATE customers SET promoEmails = ?, memberPoints = ? WHERE userID = ?", updatedCustomerParams);
+            errorMethods.exceptionErrors("Account updated", "All data was valid!");
+        }
     }
     public static void deleteUser(User user) { // Deletes specific customer data
         databaseMethods DBM = new databaseMethods();

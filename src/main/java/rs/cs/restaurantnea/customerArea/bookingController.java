@@ -102,7 +102,12 @@ public class bookingController {
                 } else {
                     bookingTimeInput.setValue(bookingDetails[0][2] + ":00");
                 }
-                bookingAmtPplInput.setValue(Integer.parseInt(bookingDetails[0][3]));
+                if (bookingDetails[0][3].equals("21")) {
+                    bookingAmtPplInput.setValue("Big table (more than 20 people)");
+                }
+                else {
+                    bookingAmtPplInput.setValue(Integer.parseInt(bookingDetails[0][3]));
+                }
             } else {
                 setAbility(true); // Disables the other inputs
             }
@@ -119,7 +124,11 @@ public class bookingController {
         bookingTimeInput.setDisable(disabled);
     }
     public void updateBookings(ActionEvent event) {
-        Booking booking = new Booking(bookingNameInput.getText(), bookingDateInput.getValue(), String.valueOf(bookingTimeInput.getValue()).substring(0,2), Integer.parseInt(String.valueOf(bookingAmtPplInput.getValue())), null, user, -1, Integer.parseInt(bookingIDInput.getText()));
+        String bookingAmtPpl = String.valueOf(bookingAmtPplInput.getValue());
+        if (bookingAmtPplInput.getValue().equals("Big table (more than 20 people)")) {
+            bookingAmtPpl = "21";
+        }
+        Booking booking = new Booking(bookingNameInput.getText(), bookingDateInput.getValue(), String.valueOf(bookingTimeInput.getValue()).substring(0,2), Integer.parseInt(bookingAmtPpl), null, user, -1, Integer.parseInt(bookingIDInput.getText()));
         boolean accountDeleted = customerCUDBookings.updateBookings(booking); // Attempts to update the booking
         if (accountDeleted) {
             setAbility(true); // Disables the input to edit a booking

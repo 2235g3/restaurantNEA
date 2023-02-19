@@ -1,12 +1,16 @@
 package rs.cs.restaurantnea.adminArea;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
 import rs.cs.restaurantnea.general.dataMaintenance;
 import rs.cs.restaurantnea.general.errorMethods;
 import rs.cs.restaurantnea.general.objects.Booking;
+import rs.cs.restaurantnea.general.regExMatchers;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class adminCUDBookings {
     public static boolean checkCustomerExists(int customerID) {
@@ -62,16 +66,33 @@ public class adminCUDBookings {
         return availableTables;
     }
     public static boolean checkDailyBookings(databaseMethods DBM, Booking booking) {
-        Object[] dateParam = {booking.getDate().toString(), booking.getUser().getCustomerID()}; // Creates the parameters
-        String[][] countBookings = DBM.getData("SELECT COUNT(bookingID) FROM bookings WHERE Day = ? AND custID = ?", dateParam); // Counts how many bookings the user has on one day, can only be 1 or 0
+        Object[] custIDParams = {booking.getBookingID()};
+        String[][] custID = DBM.getData("SELECT custID FROM bookings WHERE bookingID = ?", custIDParams);
+        Object[] dateParam = {booking.getDate().toString(), custID[0][0], booking.getBookingID()}; // Creates the parameters
+        String[][] countBookings = DBM.getData("SELECT COUNT(bookingID) FROM bookings WHERE Day = ? AND custID = ? AND NOT bookingID = ?", dateParam); // Counts how many bookings the user has on one day, can only be 1 or 0
         if (countBookings[0][0].equals("1")) {
+            return true;
+        }
+        return false;
+    }
+    public static boolean checkValidInputs(Booking booking) {
+        if (booking.getDate() == null || !regExMatchers.createNameMatcher(booking.getName()).matches()) { // If no date is inputted or the name is invalid, an error is thrown
+            return true;
+        }
+        return false;
+    }
+    public static boolean checkValidDate(Booking booking) {
+        LocalDate currentDate = LocalDate.now(); // Gets the date as of right now
+        LocalDate maxBookDate = currentDate.plusYears(1); // Gets the date as of one year from now
+        if (booking.getDate().isBefore(currentDate) || booking.getDate().equals(currentDate) || booking.getDate().isAfter(maxBookDate)) { // Checks if the booking is within a valid range
             return true;
         }
         return false;
     }
     public static void deleteBookingData(int bookingID) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        if (errorMethods.EBDeleteConfirmation().isPresent()) { // Runs if the user confirms they want to delete their booking
+        Optional<ButtonType> confirmation = errorMethods.EBDeleteConfirmation();
+        if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) { // Runs if the user confirms they want to delete their booking
             databaseMethods DBM = new databaseMethods();
             Object[] deleteParam = {bookingID}; // The only parameter needed is the booking id for both queries
             DBM.CUDData("DELETE FROM bookings WHERE bookingID = ?", deleteParam); // Deletes the actual booking
@@ -87,6 +108,14 @@ public class adminCUDBookings {
 
         if (checkDailyBookings(DBM, booking)) { // Checks if the user already has a booking on that day
             errorMethods.premadeAlertErrors(alert, "You already have a booking for this date", "You are only permitted one booking per day").show();
+            return false;
+        }
+        if (checkValidInputs(booking)) {
+            errorMethods.exceptionErrors("One or more inputs invalid", "Booking not made");
+            return false;
+        }
+        if (checkValidDate(booking)) {
+            errorMethods.exceptionErrors("The date is invalid", "The date is invalid if: \n• It is today\n•It is earlier than today\n•It is more than one year from now\nBooking not made");
             return false;
         }
 

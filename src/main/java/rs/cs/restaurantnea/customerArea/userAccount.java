@@ -1,6 +1,9 @@
 package rs.cs.restaurantnea.customerArea;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import rs.cs.restaurantnea.GeneralController;
 import rs.cs.restaurantnea.general.IOData.cryptMethods;
 import rs.cs.restaurantnea.general.IOData.databaseMethods;
 import rs.cs.restaurantnea.general.objects.User;
@@ -8,6 +11,7 @@ import rs.cs.restaurantnea.general.regExMatchers;
 
 import javax.crypto.spec.IvParameterSpec;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.regex.Matcher;
 
 import static rs.cs.restaurantnea.general.errorMethods.*;
@@ -15,7 +19,7 @@ import static rs.cs.restaurantnea.general.errorMethods.*;
 public class userAccount {
     public static User saveUserData(User user, String[] inputFields) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        if (regExCheck(alert, user)  || inputFields[0].length() < 3 || inputFields[1].length() < 3 || inputFields[2].equals("null")) { // Checks if the inputted values are valid
+        if (regExCheck(inputFields)  || inputFields[0].length() < 3 || inputFields[1].length() < 3 || inputFields[2].equals("null")) { // Checks if the inputted values are valid
             alert = premadeAlertErrors(alert, "One or more inputs invalid", "Your data has not been saved");
             alert.show();
             return user;
@@ -25,9 +29,9 @@ public class userAccount {
         updateUserData(user, encryptedFields); // Updates the data
         return saveSuccess(user, inputFields, alert); // Returns the new user object
     }
-    public static boolean regExCheck(Alert alert, User user) {
-        Matcher fNameMatcher = regExMatchers.createNameMatcher(user.getFName());
-        Matcher lNameMatcher = regExMatchers.createNameMatcher(user.getLName());
+    public static boolean regExCheck(String[] inputFields) {
+        Matcher fNameMatcher = regExMatchers.createNameMatcher(inputFields[0]);
+        Matcher lNameMatcher = regExMatchers.createNameMatcher(inputFields[1]);
         if (!fNameMatcher.matches() || !lNameMatcher.matches()) { // Checks that the inputted names match the regex
             return true;
         }
@@ -54,13 +58,15 @@ public class userAccount {
         premadeAlertErrors(alert, "Your data has been saved!", "First Name: " + inputFields[0] + "\n Last Name: " + inputFields[1] + "\n Promotional Emails Frequency: " + inputFields[2]).show();
         return user;
     }
-    public static void deleteAccount(User user) {
+    public static void deleteAccount(User user, ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
 
-        if (UADeleteConfirmation().isPresent()) { // Confirms the user wants to delete their account to prevent misclicks
+        Optional<ButtonType> confirmation = UADeleteConfirmation();
+        if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) { // Confirms the user wants to delete their account to prevent misclicks
             deleteData(user); // Deletes the database data
             deleteKeyEntry(user); // Deletes the key entry for that user
             premadeAlertErrors(alert, "Your account has now been deleted", "You have now been signed out").show();
+            new GeneralController().selectNewScene("welcomePage.fxml", event);
         }
         else {
             premadeAlertErrors(alert, "Your account has not been deleted", "You will stayed signed in").show();
